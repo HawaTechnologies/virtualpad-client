@@ -1,0 +1,27 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://ckcurf3t2cdhj"]
+
+[ext_resource type="StyleBox" uid="uid://c0v6pt8yyrdcu" path="res://Styles/Themes/Black/black-button-miniround-disabled.tres" id="1_j2rmv"]
+[ext_resource type="StyleBox" uid="uid://c70sugartde6h" path="res://Styles/Themes/Black/black-button-miniround-focus.tres" id="2_y7f4j"]
+[ext_resource type="StyleBox" uid="uid://dsr5747vvw3ew" path="res://Styles/Themes/Black/black-button-miniround-hover.tres" id="3_bgeku"]
+[ext_resource type="StyleBox" uid="uid://thopd0kp1io6" path="res://Styles/Themes/Black/black-button-miniround-normal.tres" id="4_xpstf"]
+[ext_resource type="StyleBox" uid="uid://dy2wtb2p4i58w" path="res://Styles/Themes/Black/black-button-miniround-pressed.tres" id="5_0mdbb"]
+
+[resource]
+Button/colors/font_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/font_disabled_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/font_focus_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/font_hover_pressed_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/font_outline_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/font_pressed_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/icon_disabled_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/icon_focus_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/icon_hover_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/icon_hover_pressed_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/icon_normal_color = Color(0.8, 0.8, 0.8, 1)
+Button/colors/icon_pressed_color = Color(0.8, 0.8, 0.8, 1)
+Button/styles/disabled = ExtResource("1_j2rmv")
+Button/styles/focus = ExtResource("2_y7f4j")
+Button/styles/hover = ExtResource("3_bgeku")
+Button/styles/normal = ExtResource("4_xpstf")
+Button/styles/pressed = ExtResource("5_0mdbb")

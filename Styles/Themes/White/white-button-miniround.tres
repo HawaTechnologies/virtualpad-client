@@ -1,0 +1,27 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://hlyucaf2vow0"]
+
+[ext_resource type="StyleBox" uid="uid://cen2jl483nhr" path="res://Styles/Themes/White/white-button-miniround-disabled.tres" id="1_amja5"]
+[ext_resource type="StyleBox" uid="uid://dafge8v25n0be" path="res://Styles/Themes/White/white-button-miniround-focus.tres" id="2_cemck"]
+[ext_resource type="StyleBox" uid="uid://c8jryc4q2bvji" path="res://Styles/Themes/White/white-button-miniround-hover.tres" id="3_fqfh0"]
+[ext_resource type="StyleBox" uid="uid://cfnedy8egw1ei" path="res://Styles/Themes/White/white-button-miniround-normal.tres" id="4_ffsi5"]
+[ext_resource type="StyleBox" uid="uid://dadgsofto3c4x" path="res://Styles/Themes/White/white-button-miniround-pressed.tres" id="5_3hm7l"]
+
+[resource]
+Button/colors/font_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_disabled_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_focus_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_hover_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_hover_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_outline_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_disabled_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_focus_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_hover_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_hover_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_normal_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/styles/disabled = ExtResource("1_amja5")
+Button/styles/focus = ExtResource("2_cemck")
+Button/styles/hover = ExtResource("3_fqfh0")
+Button/styles/normal = ExtResource("4_ffsi5")
+Button/styles/pressed = ExtResource("5_3hm7l")

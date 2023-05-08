@@ -1,0 +1,66 @@
+[gd_scene load_steps=5 format=3 uid="uid://d1cgpv1hxw3ah"]
+
+[ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
+[ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
+[ext_resource type="Theme" uid="uid://dwjhksbg4in85" path="res://Styles/Themes/White/white-button-round.tres" id="2_ajbyq"]
+[ext_resource type="Theme" uid="uid://drirahqblb3i6" path="res://Styles/Themes/Black/black-button-round.tres" id="4_vby4y"]
+
+[node name="Pad" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Themes" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -43.0
+offset_right = 80.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Black-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+theme = ExtResource("1_e2ulx")
+text = "SA"
+
+[node name="White-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 68.0
+offset_top = -92.0
+offset_right = 108.0
+offset_bottom = -52.0
+theme = ExtResource("1_cyruv")
+text = "SA"
+
+[node name="White-Big" type="Button" parent="Themes"]
+layout_mode = 0
+offset_left = -105.0
+offset_top = -73.0
+offset_right = -25.0
+offset_bottom = 7.0
+theme = ExtResource("2_ajbyq")
+text = "SA"
+
+[node name="Black-Big" type="Button" parent="Themes"]
+offset_left = 159.0
+offset_top = -53.0
+offset_right = 239.0
+offset_bottom = 27.0
+theme = ExtResource("4_vby4y")
+text = "SA"
