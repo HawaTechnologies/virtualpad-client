@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=9 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
+[ext_resource type="Theme" uid="uid://7uwjyikt2e67" path="res://Styles/Themes/Dragon/dragon-button-miniround.tres" id="2_6ol8h"]
 [ext_resource type="Theme" uid="uid://dwjhksbg4in85" path="res://Styles/Themes/White/white-button-round.tres" id="2_ajbyq"]
+[ext_resource type="Theme" uid="uid://bp6iovalqqgky" path="res://Styles/Themes/Shark/shark-button-miniround.tres" id="3_6ednw"]
 [ext_resource type="Theme" uid="uid://drirahqblb3i6" path="res://Styles/Themes/Black/black-button-round.tres" id="4_vby4y"]
+[ext_resource type="Theme" uid="uid://begkp283uyfqn" path="res://Styles/Themes/Dragon/dragon-button-round.tres" id="7_nv0eu"]
+[ext_resource type="Theme" uid="uid://dq02d2jy1yd2s" path="res://Styles/Themes/Shark/shark-button-round.tres" id="8_r2dc2"]
 
 [node name="Pad" type="Control"]
 layout_mode = 3
@@ -36,6 +40,30 @@ offset_right = 40.0
 theme = ExtResource("1_e2ulx")
 text = "SA"
 
+[node name="Dragon-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -121.0
+offset_right = 41.0
+offset_bottom = -81.0
+theme = ExtResource("2_6ol8h")
+text = "SA"
+
+[node name="Shark-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 85.0
+offset_top = -164.0
+offset_right = 125.0
+offset_bottom = -124.0
+theme = ExtResource("3_6ednw")
+text = "SA"
+
 [node name="White-Small" type="Button" parent="Themes"]
 layout_mode = 1
 anchors_preset = -1
@@ -63,4 +91,20 @@ offset_top = -53.0
 offset_right = 239.0
 offset_bottom = 27.0
 theme = ExtResource("4_vby4y")
+text = "SA"
+
+[node name="Dragon-Big" type="Button" parent="Themes"]
+offset_left = 266.0
+offset_top = -50.0
+offset_right = 346.0
+offset_bottom = 30.0
+theme = ExtResource("7_nv0eu")
+text = "SA"
+
+[node name="Shark-Big" type="Button" parent="Themes"]
+offset_left = 215.0
+offset_top = -159.0
+offset_right = 295.0
+offset_bottom = -79.0
+theme = ExtResource("8_r2dc2")
 text = "SA"

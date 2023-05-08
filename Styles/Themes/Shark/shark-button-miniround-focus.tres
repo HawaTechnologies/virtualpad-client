@@ -1,7 +1,9 @@
 [gd_resource type="StyleBoxFlat" format=3 uid="uid://d2np5ijwruvlr"]
 
 [resource]
+bg_color = Color(0, 0.2, 0.6, 1)
 draw_center = false
+border_color = Color(0, 0.266667, 0.8, 1)
 border_blend = true
 corner_detail = 20
 anti_aliasing_size = 0.313
