@@ -1,0 +1,7 @@
+[gd_resource type="StyleBoxFlat" format=3 uid="uid://b7vchof0ombgg"]
+
+[resource]
+draw_center = false
+border_blend = true
+corner_detail = 20
+anti_aliasing_size = 0.313

@@ -1,0 +1,27 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://begkp283uyfqn"]
+
+[ext_resource type="StyleBox" uid="uid://5oaduay6mhba" path="res://Styles/Themes/Dragon/dragon-button-round-disabled.tres" id="1_rre5q"]
+[ext_resource type="StyleBox" uid="uid://b7vchof0ombgg" path="res://Styles/Themes/Dragon/dragon-button-round-focus.tres" id="2_x5mc6"]
+[ext_resource type="StyleBox" uid="uid://dm7yb03mpdu60" path="res://Styles/Themes/Dragon/dragon-button-round-hover.tres" id="3_ylp63"]
+[ext_resource type="StyleBox" uid="uid://jfjeq2o77dg0" path="res://Styles/Themes/Dragon/dragon-button-round-normal.tres" id="4_wshfw"]
+[ext_resource type="StyleBox" uid="uid://dxu4jdp6vx1pk" path="res://Styles/Themes/Dragon/dragon-button-round-pressed.tres" id="5_jnjpw"]
+
+[resource]
+Button/colors/font_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_disabled_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_focus_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_hover_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_hover_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_outline_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/font_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_disabled_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_focus_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_hover_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_hover_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_normal_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/colors/icon_pressed_color = Color(0.211765, 0.211765, 0.211765, 1)
+Button/styles/disabled = ExtResource("1_rre5q")
+Button/styles/focus = ExtResource("2_x5mc6")
+Button/styles/hover = ExtResource("3_ylp63")
+Button/styles/normal = ExtResource("4_wshfw")
+Button/styles/pressed = ExtResource("5_jnjpw")
