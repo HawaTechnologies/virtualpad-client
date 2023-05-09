@@ -86,6 +86,7 @@ theme = ExtResource("2_ajbyq")
 text = "SA"
 
 [node name="Black-Big" type="Button" parent="Themes"]
+layout_mode = 0
 offset_left = 159.0
 offset_top = -53.0
 offset_right = 239.0
@@ -94,6 +95,7 @@ theme = ExtResource("4_vby4y")
 text = "SA"
 
 [node name="Dragon-Big" type="Button" parent="Themes"]
+layout_mode = 0
 offset_left = 266.0
 offset_top = -50.0
 offset_right = 346.0
@@ -102,6 +104,7 @@ theme = ExtResource("7_nv0eu")
 text = "SA"
 
 [node name="Shark-Big" type="Button" parent="Themes"]
+layout_mode = 0
 offset_left = 215.0
 offset_top = -159.0
 offset_right = 295.0
