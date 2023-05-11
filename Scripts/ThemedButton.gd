@@ -61,6 +61,14 @@ var _COLORS = {
 }
 
 
+func _reset():
+	add_theme_stylebox_override("normal", StyleBoxFlat.new())
+	add_theme_stylebox_override("focus", StyleBoxFlat.new())
+	add_theme_stylebox_override("hover", StyleBoxFlat.new())
+	add_theme_stylebox_override("pressed", StyleBoxFlat.new())
+	add_theme_stylebox_override("disabled", StyleBoxFlat.new())
+	get_theme_stylebox("focus").draw_center = false
+
 func _update_color():
 	var color = get_meta("pad_color")
 	if color in _COLORS:
@@ -94,14 +102,15 @@ func _update_color():
 		print("Set it to one of these values: white, black, dragon, shark.")
 
 
-func _update_theme():
+func update_theme():
 	print("Updating theme")
+	_reset()
 	_update_color()
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_update_theme()
+	update_theme()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
