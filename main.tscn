@@ -193,6 +193,78 @@ offset_bottom = 174.0
 grow_horizontal = 0
 grow_vertical = 2
 
+[node name="North" type="Button" parent="Buttons/Actions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -110.0
+offset_right = 40.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "N"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-corner-radius"
+
+[node name="East" type="Button" parent="Buttons/Actions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 30.0
+offset_top = -40.0
+offset_right = 110.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "E"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-corner-radius"
+
+[node name="South" type="Button" parent="Buttons/Actions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "S"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-corner-radius"
+
+[node name="West" type="Button" parent="Buttons/Actions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -40.0
+offset_right = -30.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "W"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-corner-radius"
+
 [node name="Shoulders" type="Control" parent="Buttons"]
 layout_mode = 1
 anchors_preset = 10
