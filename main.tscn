@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=7 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
 [ext_resource type="Theme" uid="uid://7uwjyikt2e67" path="res://Styles/Themes/Dragon/dragon-button-miniround.tres" id="2_6ol8h"]
+[ext_resource type="Script" path="res://Scripts/ThemeButton.gd" id="2_ysceq"]
 [ext_resource type="Theme" uid="uid://bp6iovalqqgky" path="res://Styles/Themes/Shark/shark-button-miniround.tres" id="3_6ednw"]
+[ext_resource type="Script" path="res://Scripts/ThemedButtons.gd" id="5_dx1r5"]
 
 [node name="Pad" type="Control"]
 layout_mode = 3
@@ -34,6 +36,8 @@ offset_top = -40.0
 offset_right = 40.0
 theme = ExtResource("1_e2ulx")
 text = "SA"
+script = ExtResource("2_ysceq")
+metadata/color = "black"
 
 [node name="White-Small" type="Button" parent="Themes"]
 layout_mode = 1
@@ -45,6 +49,8 @@ offset_top = -40.0
 offset_right = 80.0
 theme = ExtResource("1_cyruv")
 text = "⭐"
+script = ExtResource("2_ysceq")
+metadata/color = "white"
 
 [node name="Dragon-Small" type="Button" parent="Themes"]
 layout_mode = 1
@@ -56,6 +62,8 @@ offset_top = -40.0
 offset_right = 120.0
 theme = ExtResource("2_6ol8h")
 text = "⭐"
+script = ExtResource("2_ysceq")
+metadata/color = "dragon"
 
 [node name="Shark-Small" type="Button" parent="Themes"]
 layout_mode = 1
@@ -67,6 +75,8 @@ offset_top = -40.0
 offset_right = 160.0
 theme = ExtResource("3_6ednw")
 text = "⭐"
+script = ExtResource("2_ysceq")
+metadata/color = "shark"
 
 [node name="Buttons" type="Control" parent="."]
 layout_mode = 1
@@ -74,6 +84,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("5_dx1r5")
 
 [node name="D-Pad" type="Control" parent="Buttons"]
 layout_mode = 1
