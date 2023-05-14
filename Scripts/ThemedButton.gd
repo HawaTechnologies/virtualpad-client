@@ -181,29 +181,28 @@ func _update_shape():
 		_set_borders(20, 20, 20, 20)
 	elif shape == "pad-up":
 		_update_shape_small_pressure()
-		_set_borders(20, 20, -1, -1)
+		_set_borders(20, 20, 0, 0)
 	elif shape == "pad-up-left":
 		_update_shape_small_pressure()
-		_set_borders(70, -1, -1, -1)
+		_set_borders(70, 0, 0, 0)
 	elif shape == "pad-left":
 		_update_shape_small_pressure()
-		_set_borders(20, -1, 20, -1)
+		_set_borders(20, 0, 20, 0)
 	elif shape == "pad-down-left":
 		_update_shape_small_pressure()
-		_set_borders(-1, -1, 70, -1)
+		_set_borders(0, 0, 70, 0)
 	elif shape == "pad-down":
 		_update_shape_small_pressure()
-		_set_borders(-1, -1, 20, 20)
+		_set_borders(0, 0, 20, 20)
 	elif shape == "pad-down-right":
 		_update_shape_small_pressure()
-		_set_borders(-1, -1, -1, 70)
+		_set_borders(0, 0, 0, 70)
 	elif shape == "pad-right":
 		_update_shape_small_pressure()
-		_set_borders(-1, 20, -1, 20)
+		_set_borders(0, 20, 0, 20)
 	elif shape == "pad-up-right":
 		_update_shape_small_pressure()
-		_set_borders(-1, 70, -1, -1)
-
+		_set_borders(0, 70, 0, 0)
 
 
 func update_theme():

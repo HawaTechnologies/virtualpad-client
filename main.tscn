@@ -1,15 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=5 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
 [ext_resource type="Theme" uid="uid://7uwjyikt2e67" path="res://Styles/Themes/Dragon/dragon-button-miniround.tres" id="2_6ol8h"]
-[ext_resource type="Theme" uid="uid://dwjhksbg4in85" path="res://Styles/Themes/White/white-button-round.tres" id="2_ajbyq"]
 [ext_resource type="Theme" uid="uid://bp6iovalqqgky" path="res://Styles/Themes/Shark/shark-button-miniround.tres" id="3_6ednw"]
-[ext_resource type="Theme" uid="uid://drirahqblb3i6" path="res://Styles/Themes/Black/black-button-round.tres" id="4_vby4y"]
-[ext_resource type="Theme" uid="uid://begkp283uyfqn" path="res://Styles/Themes/Dragon/dragon-button-round.tres" id="7_nv0eu"]
-[ext_resource type="Theme" uid="uid://dq02d2jy1yd2s" path="res://Styles/Themes/Shark/shark-button-round.tres" id="8_r2dc2"]
-[ext_resource type="Script" path="res://Scripts/Buttons.gd" id="9_o3uig"]
-[ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
 
 [node name="Pad" type="Control"]
 layout_mode = 3
@@ -21,7 +15,6 @@ grow_vertical = 2
 
 [node name="Themes" type="Control" parent="."]
 layout_mode = 1
-anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -40,92 +33,90 @@ anchor_bottom = 1.0
 offset_top = -40.0
 offset_right = 40.0
 theme = ExtResource("1_e2ulx")
-text = "SA"
-
-[node name="Dragon-Small" type="Button" parent="Themes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = -121.0
-offset_right = 41.0
-offset_bottom = -81.0
-theme = ExtResource("2_6ol8h")
-text = "SA"
-
-[node name="Shark-Small" type="Button" parent="Themes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 85.0
-offset_top = -164.0
-offset_right = 125.0
-offset_bottom = -124.0
-theme = ExtResource("3_6ednw")
-text = "SA"
+text = "⭐"
 
 [node name="White-Small" type="Button" parent="Themes"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 68.0
-offset_top = -92.0
-offset_right = 108.0
-offset_bottom = -52.0
+offset_left = 40.0
+offset_top = -40.0
+offset_right = 80.0
 theme = ExtResource("1_cyruv")
-text = "SA"
+text = "⭐"
 
-[node name="White-Big" type="Button" parent="Themes"]
-layout_mode = 0
-offset_left = -105.0
-offset_top = -73.0
-offset_right = -25.0
-offset_bottom = 7.0
-theme = ExtResource("2_ajbyq")
-text = "SA"
+[node name="Dragon-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -40.0
+offset_right = 120.0
+theme = ExtResource("2_6ol8h")
+text = "⭐"
 
-[node name="Black-Big" type="Button" parent="Themes"]
-layout_mode = 0
-offset_left = 159.0
-offset_top = -53.0
-offset_right = 239.0
-offset_bottom = 27.0
-theme = ExtResource("4_vby4y")
-text = "SA"
-
-[node name="Dragon-Big" type="Button" parent="Themes"]
-layout_mode = 0
-offset_left = 266.0
-offset_top = -50.0
-offset_right = 346.0
-offset_bottom = 30.0
-theme = ExtResource("7_nv0eu")
-text = "SA"
-
-[node name="Shark-Big" type="Button" parent="Themes"]
-layout_mode = 0
-offset_left = 217.0
-offset_top = -159.0
-offset_right = 297.0
-offset_bottom = -79.0
-theme = ExtResource("8_r2dc2")
-text = "SA"
+[node name="Shark-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = -40.0
+offset_right = 160.0
+theme = ExtResource("3_6ednw")
+text = "⭐"
 
 [node name="Buttons" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("9_o3uig")
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Button" type="Button" parent="Buttons"]
-layout_mode = 0
-offset_top = 20.0
-offset_right = 107.0
-offset_bottom = 75.0
-text = "Yog-Sothoth"
-script = ExtResource("10_ayox1")
-metadata/pad_color = "shark"
-metadata/shape = "big-corner-radius"
+[node name="D-Pad" type="Control" parent="Buttons"]
+layout_mode = 1
+anchor_bottom = 1.0
+offset_top = 150.0
+offset_right = 400.0
+offset_bottom = -150.0
+grow_vertical = 2
+
+[node name="Actions" type="Control" parent="Buttons"]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = 150.0
+offset_bottom = -150.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Shoulders" type="Control" parent="Buttons"]
+layout_mode = 1
+anchor_right = 1.0
+offset_bottom = 150.0
+grow_horizontal = 2
+
+[node name="Analogs" type="Control" parent="Buttons"]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 350.0
+offset_top = -250.0
+offset_right = -350.0
+offset_bottom = -75.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Main" type="Control" parent="Buttons"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 400.0
+offset_top = 250.0
+offset_right = -400.0
+offset_bottom = -250.0
