@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=11 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
@@ -8,6 +8,8 @@
 [ext_resource type="Theme" uid="uid://drirahqblb3i6" path="res://Styles/Themes/Black/black-button-round.tres" id="4_vby4y"]
 [ext_resource type="Theme" uid="uid://begkp283uyfqn" path="res://Styles/Themes/Dragon/dragon-button-round.tres" id="7_nv0eu"]
 [ext_resource type="Theme" uid="uid://dq02d2jy1yd2s" path="res://Styles/Themes/Shark/shark-button-round.tres" id="8_r2dc2"]
+[ext_resource type="Script" path="res://Scripts/Buttons.gd" id="9_o3uig"]
+[ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
 
 [node name="Pad" type="Control"]
 layout_mode = 3
@@ -105,9 +107,25 @@ text = "SA"
 
 [node name="Shark-Big" type="Button" parent="Themes"]
 layout_mode = 0
-offset_left = 215.0
+offset_left = 217.0
 offset_top = -159.0
-offset_right = 295.0
+offset_right = 297.0
 offset_bottom = -79.0
 theme = ExtResource("8_r2dc2")
 text = "SA"
+
+[node name="Buttons" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("9_o3uig")
+
+[node name="Button" type="Button" parent="Buttons"]
+layout_mode = 0
+offset_top = 20.0
+offset_right = 107.0
+offset_bottom = 75.0
+text = "Yog-Sothoth"
+script = ExtResource("10_ayox1")
+metadata/pad_color = "shark"
+metadata/shape = "big-corner-radius"

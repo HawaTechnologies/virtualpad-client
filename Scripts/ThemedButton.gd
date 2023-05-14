@@ -69,6 +69,7 @@ func _reset():
 	add_theme_stylebox_override("disabled", StyleBoxFlat.new())
 	get_theme_stylebox("focus").draw_center = false
 
+
 func _update_color():
 	var color = get_meta("pad_color")
 	if color in _COLORS:
@@ -102,10 +103,114 @@ func _update_color():
 		print("Set it to one of these values: white, black, dragon, shark.")
 
 
+func _update_shape_big_pressure():
+	var normal = get_theme_stylebox("normal")
+	var disabled = get_theme_stylebox("disabled")
+	var hover = get_theme_stylebox("hover")
+	var pressed = get_theme_stylebox("pressed")
+	
+	for state in [normal, disabled, hover]:
+		state.border_width_left = 4
+		state.border_width_right = 4
+		state.border_width_top = 4
+		state.border_width_bottom = 14
+		state.expand_margin_top = 10
+		state.content_margin_bottom = 26
+		state.border_blend = true
+	pressed.border_width_left = 4
+	pressed.border_width_right = 4
+	pressed.border_width_top = 4
+	pressed.border_width_bottom = 8
+	pressed.expand_margin_top = 4
+	pressed.content_margin_bottom = 16
+	pressed.border_blend = true
+
+
+func _update_shape_small_pressure():
+	var normal = get_theme_stylebox("normal")
+	var disabled = get_theme_stylebox("disabled")
+	var hover = get_theme_stylebox("hover")
+	var pressed = get_theme_stylebox("pressed")
+
+	for state in [normal, disabled, hover]:
+		state.border_width_left = 2
+		state.border_width_right = 2
+		state.border_width_top = 2
+		state.border_width_bottom = 7
+		state.expand_margin_top = 5
+		state.content_margin_bottom = 13
+		state.border_blend = true
+	pressed.border_width_left = 2
+	pressed.border_width_right = 2
+	pressed.border_width_top = 2
+	pressed.border_width_bottom = 4
+	pressed.expand_margin_top = 2
+	pressed.content_margin_bottom = 8
+	pressed.border_blend = true
+
+
+func _set_borders(top_left, top_right, bottom_left, bottom_right):
+	var normal = get_theme_stylebox("normal")
+	var disabled = get_theme_stylebox("disabled")
+	var hover = get_theme_stylebox("hover")
+	var pressed = get_theme_stylebox("pressed")
+
+	if top_left >= 0:
+		for state in [normal, disabled, hover, pressed]:
+			state.corner_radius_top_left = top_left
+	if top_right >= 0:
+		for state in [normal, disabled, hover, pressed]:
+			state.corner_radius_top_right = top_right
+	if bottom_left >= 0:
+		for state in [normal, disabled, hover, pressed]:
+			state.corner_radius_bottom_left = bottom_left
+	if bottom_right >= 0:
+		for state in [normal, disabled, hover, pressed]:
+			state.corner_radius_bottom_right = bottom_right
+
+
+func _update_shape():
+	var shape = get_meta("shape")
+	if shape == "big-corner-radius":
+		# North, South, East, West.
+		_update_shape_big_pressure()
+		_set_borders(40, 40, 40, 40)
+	elif shape == "small-corner-radius":
+		# L1, L2, R1, R2, Select, Start.
+		_update_shape_small_pressure()
+		_set_borders(20, 20, 20, 20)
+	elif shape == "pad-up":
+		_update_shape_small_pressure()
+		_set_borders(20, 20, -1, -1)
+	elif shape == "pad-up-left":
+		_update_shape_small_pressure()
+		_set_borders(70, -1, -1, -1)
+	elif shape == "pad-left":
+		_update_shape_small_pressure()
+		_set_borders(20, -1, 20, -1)
+	elif shape == "pad-down-left":
+		_update_shape_small_pressure()
+		_set_borders(-1, -1, 70, -1)
+	elif shape == "pad-down":
+		_update_shape_small_pressure()
+		_set_borders(-1, -1, 20, 20)
+	elif shape == "pad-down-right":
+		_update_shape_small_pressure()
+		_set_borders(-1, -1, -1, 70)
+	elif shape == "pad-right":
+		_update_shape_small_pressure()
+		_set_borders(-1, 20, -1, 20)
+	elif shape == "pad-up-right":
+		_update_shape_small_pressure()
+		_set_borders(-1, 70, -1, -1)
+
+
+
 func update_theme():
 	print("Updating theme")
 	_reset()
 	_update_color()
+	_update_shape()
 
 
 # Called when the node enters the scene tree for the first time.
