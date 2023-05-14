@@ -272,6 +272,64 @@ anchor_right = 1.0
 offset_bottom = 150.0
 grow_horizontal = 2
 
+[node name="L1" type="Button" parent="Buttons/Shoulders"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 100.0
+offset_top = 90.0
+offset_right = 300.0
+offset_bottom = 150.0
+text = "L1
+"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "small-corner-radius"
+
+[node name="L2" type="Button" parent="Buttons/Shoulders"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 50.0
+offset_top = 15.0
+offset_right = 250.0
+offset_bottom = 75.0
+text = "L2
+"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "small-corner-radius"
+
+[node name="R2" type="Button" parent="Buttons/Shoulders"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -250.0
+offset_top = 15.0
+offset_right = -50.0
+offset_bottom = 75.0
+grow_horizontal = 0
+text = "R2
+"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "small-corner-radius"
+
+[node name="R1" type="Button" parent="Buttons/Shoulders"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_top = 90.0
+offset_right = -100.0
+offset_bottom = 150.0
+grow_horizontal = 0
+text = "R1
+"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "small-corner-radius"
+
 [node name="Analogs" type="Control" parent="Buttons"]
 layout_mode = 1
 anchors_preset = 7
@@ -295,6 +353,38 @@ offset_left = 400.0
 offset_top = 250.0
 offset_right = -400.0
 offset_bottom = -250.0
+
+[node name="Select" type="Button" parent="Buttons/Main"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 120.0
+offset_bottom = 20.0
+grow_vertical = 2
+text = "Select
+"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "small-corner-radius"
+
+[node name="Start" type="Button" parent="Buttons/Main"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -20.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "Start"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "small-corner-radius"
 
 [node name="Themes" type="Control" parent="."]
 layout_mode = 1
