@@ -71,7 +71,7 @@ func _reset():
 
 
 func _update_color():
-	var color = get_meta("pad_color")
+	var color = get_meta("color")
 	if color in _COLORS:
 		var color_settings = _COLORS[color]
 		print("Using color:", color_settings)
@@ -99,7 +99,7 @@ func _update_color():
 		focus.border_color = Color(0, 0, 0, 0)
 		focus.shadow_color = Color(0, 0, 0, 0)
 	else:
-		print("No pad-color (or invalid one) was set in the metadata.")
+		print("No pad-color (or invalid one) was set in the metadata:", color)
 		print("Set it to one of these values: white, black, dragon, shark.")
 
 
