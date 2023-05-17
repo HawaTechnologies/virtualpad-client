@@ -1,5 +1,6 @@
 extends Control
 
+
 # Buttons are: North, East, South, West, L1, R1, L2, R2,
 #              Select, Start, Up, Down, Left, Right.
 const N_BUTTONS = 14
@@ -17,6 +18,23 @@ const BTN_UP = 10
 const BTN_DOWN = 11
 const BTN_LEFT = 12
 const BTN_RIGHT = 13
+var _buttons_by_name = {
+	"north": BTN_NORTH,
+	"east": BTN_EAST,
+	"south": BTN_SOUTH,
+	"west": BTN_WEST,
+	"l1": BTN_L1,
+	"r1": BTN_R1,
+	"l2": BTN_L2,
+	"r2": BTN_R2,
+	"select": BTN_SELECT,
+	"start": BTN_START,
+	"up": BTN_UP,
+	"down": BTN_DOWN,
+	"left": BTN_LEFT,
+	"right": BTN_RIGHT,
+}
+
 
 # Axes are: X, Y, RX, RY.
 const N_AXES = 4
@@ -24,6 +42,11 @@ const ABS_X = 14
 const ABS_Y = 15
 const ABS_RX = 16
 const ABS_RY = 17
+var _axes_by_name = {
+	"analog_left": [ABS_X, ABS_Y],
+	"analog_right": [ABS_RX, ABS_RY]
+}
+
 
 # The buttons will be contained here. In this case, we'll keep
 # for each element (rect, key, button) being:
@@ -39,6 +62,7 @@ const ABS_RY = 17
 # This is only populated on startup.
 var _BUTTONS = []
 
+
 # The axes will be contained here. In this case, we'll keep
 # for each element (rect, key, shape). These are the analog
 # sticks (left, and right -- the D-Pad will not count as axes
@@ -52,6 +76,7 @@ var _BUTTONS = []
 #
 # This is only populated on startup.
 var _AXES = []
+
 
 # These are the touches (in terms of the touch screen) that
 # are being tracked. Each touch will consist of:
@@ -67,19 +92,11 @@ var _AXES = []
 # move across touches.
 var _TOUCHES = {}
 
-# These are the buttons and axes to send. Buttons will be sent
-# in terms of (index, 0|1) pairs. 14 buttons are supported. On
-# the other side, axes will be sent in terms of (index, 0..255)
-# pairs. 4 axes are supported
-var _pressed_new_buttons = [0] * N_BUTTONS + [127] * N_AXES
-var _pressed_old_buttons = [0] * N_BUTTONS + [127] * N_AXES
 
-# These are the axes to send. Different to buttons, axes will
-# be sent in terms of (index, 0..255) pairs.
-var _abs_lx = 127
-var _abs_ly = 127
-var _abs_rx = 127
-var _abs_ry = 127
+# The current and new states of all the buttons and axes.
+var _current_state = []
+var _new_state = []
+
 
 func _find_button(position):
 	for setting in _BUTTONS:
@@ -122,16 +139,23 @@ func _input(event):
 				# TODO the buttons were pressed.
 			else:
 				# Index is present: update the buttons.
+				pass
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_BUTTONS.clear()
+	_AXES.clear()
+	var count = 0
 	for child in get_tree().get_nodes_in_group("ThemedButtons"):
-		_BUTTONS.append([
+		var target = _AXES
+		if count < 14:
+			target = _BUTTONS
+		target.append([
 			Rect2(child.rect_global_position, child.rect_size),
 			child.get_meta("keys"), child
 		])
+		count += 1
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
