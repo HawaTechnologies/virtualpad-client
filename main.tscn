@@ -1,11 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=10 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
 [ext_resource type="Theme" uid="uid://7uwjyikt2e67" path="res://Styles/Themes/Dragon/dragon-button-miniround.tres" id="2_6ol8h"]
 [ext_resource type="Script" path="res://Scripts/ThemeButton.gd" id="2_ysceq"]
 [ext_resource type="Theme" uid="uid://bp6iovalqqgky" path="res://Styles/Themes/Shark/shark-button-miniround.tres" id="3_6ednw"]
+[ext_resource type="Script" path="res://Scripts/ThemedAxis.gd" id="3_denh2"]
 [ext_resource type="Script" path="res://Scripts/ThemedButtons.gd" id="5_dx1r5"]
+[ext_resource type="Script" path="res://Scripts/ButtonOverlay.gd" id="8_q2lf1"]
 [ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
 
 [node name="Pad" type="Control"]
@@ -49,6 +51,7 @@ offset_right = 20.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "	⬆"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-up"
@@ -67,6 +70,7 @@ offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "↖"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-up-left"
@@ -85,6 +89,7 @@ offset_right = 90.0
 offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "↗"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-up-right"
@@ -103,6 +108,7 @@ offset_right = -20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "⬅"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-left"
@@ -121,6 +127,7 @@ offset_right = 110.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "➡"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-right"
@@ -139,6 +146,7 @@ offset_right = -20.0
 offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "↙"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-down-left"
@@ -157,6 +165,7 @@ offset_right = 90.0
 offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "↘"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-down-right"
@@ -175,6 +184,7 @@ offset_right = 20.0
 offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "⬇"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-down"
@@ -206,6 +216,7 @@ offset_right = 40.0
 offset_bottom = -30.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "N"
 script = ExtResource("10_ayox1")
 metadata/color = "white"
@@ -224,6 +235,7 @@ offset_right = 110.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "E"
 script = ExtResource("10_ayox1")
 metadata/color = "white"
@@ -242,6 +254,7 @@ offset_right = 40.0
 offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "S"
 script = ExtResource("10_ayox1")
 metadata/color = "white"
@@ -260,6 +273,7 @@ offset_right = -30.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
+toggle_mode = true
 text = "W"
 script = ExtResource("10_ayox1")
 metadata/color = "white"
@@ -279,6 +293,7 @@ offset_left = 100.0
 offset_top = 90.0
 offset_right = 300.0
 offset_bottom = 150.0
+toggle_mode = true
 text = "L1
 "
 script = ExtResource("10_ayox1")
@@ -292,6 +307,7 @@ offset_left = 50.0
 offset_top = 15.0
 offset_right = 250.0
 offset_bottom = 75.0
+toggle_mode = true
 text = "L2
 "
 script = ExtResource("10_ayox1")
@@ -308,6 +324,7 @@ offset_top = 15.0
 offset_right = -50.0
 offset_bottom = 75.0
 grow_horizontal = 0
+toggle_mode = true
 text = "R2
 "
 script = ExtResource("10_ayox1")
@@ -324,6 +341,7 @@ offset_top = 90.0
 offset_right = -100.0
 offset_bottom = 150.0
 grow_horizontal = 0
+toggle_mode = true
 text = "R1
 "
 script = ExtResource("10_ayox1")
@@ -344,6 +362,27 @@ offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 0
 
+[node name="LeftAxis" type="Button" parent="Buttons/Analogs"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 205.0
+grow_vertical = 2
+script = ExtResource("3_denh2")
+metadata/color = "white"
+
+[node name="RightAxis" type="Button" parent="Buttons/Analogs"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -205.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("3_denh2")
+metadata/color = "white"
+
 [node name="Main" type="Control" parent="Buttons"]
 layout_mode = 1
 anchors_preset = 15
@@ -353,6 +392,8 @@ offset_left = 400.0
 offset_top = 250.0
 offset_right = -400.0
 offset_bottom = -250.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Select" type="Button" parent="Buttons/Main"]
 layout_mode = 1
@@ -363,6 +404,7 @@ offset_top = -20.0
 offset_right = 120.0
 offset_bottom = 20.0
 grow_vertical = 2
+toggle_mode = true
 text = "Select
 "
 script = ExtResource("10_ayox1")
@@ -381,6 +423,7 @@ offset_top = -20.0
 offset_bottom = 20.0
 grow_horizontal = 0
 grow_vertical = 2
+toggle_mode = true
 text = "Start"
 script = ExtResource("10_ayox1")
 metadata/color = "white"
@@ -450,3 +493,13 @@ theme = ExtResource("3_6ednw")
 text = "⭐"
 script = ExtResource("2_ysceq")
 metadata/color = "shark"
+
+[node name="ButtonOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_q2lf1")
