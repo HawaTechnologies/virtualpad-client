@@ -224,6 +224,62 @@ func _update_state():
 		index += 1
 
 
+func _get_analog_pos(control, position):
+	"""
+	Converts a position, which is in control's rect,
+	to the corresponding analog position.
+	"""
+	
+	var control_pos = control.global_position
+	var control_size = control.size
+	return 255 * (position - control_pos) / control_size
+
+
+func _clear_control(index, keys, control, is_analog):
+	"""
+	Clears a touch index (and its control). Also clears
+	the corresponding states.
+	"""
+
+	if not is_analog:
+		control.pressed = false
+	_TOUCHED_CONTROLS[control] -= 1
+	if _TOUCHED_CONTROLS[control] < 0:
+		_TOUCHED_CONTROLS[control] = 0
+	if _TOUCHED_CONTROLS[control] == 0:
+		if is_analog:
+			# Clear an analog to 127 in both keys.
+			for key in keys:
+				_modify_state(key, 127)
+		else:
+			# Clear all the buttons in the keys to 0.
+			for key in keys:
+				_modify_state(key, 0)
+
+
+func _set_control(index, keys, control, is_analog):
+	"""
+	Sets a touch index (and its control). Also sets the
+	corresponding states.
+	"""
+
+	if not is_analog:
+		control.pressed = true
+	if _TOUCHED_CONTROLS.get(control, -1) < 0:
+		_TOUCHED_CONTROLS[control] = 1
+	else:
+		_TOUCHED_CONTROLS[control] += 1
+	if control[2]:
+		# Clear an analog to 127 in both keys.
+		var r = _get_analog_pos(control, position)
+		_modify_state(keys[0], r.x)
+		_modify_state(keys[1], r.y)
+	else:
+		# Clear all the buttons in the keys to 0.
+		for key in keys:
+			_modify_state(key, 1)
+
+
 func _touch_update(index, control):
 	"""
 	Updates the data of a current touch. The control
@@ -243,13 +299,17 @@ func _touch_update(index, control):
 			# This means that it must lose a
 			# touch among the potentially many
 			# that can hold.
-			pass
+			_TOUCHES.erase(index)
+			_clear_control(index, current_control[0],
+				current_control[1], current_control[2])
 	else:
 		if current_control == null:
 			# The touch was not active on any
 			# control, and now it is active
 			# on one control.
-			pass
+			_TOUCHES[index] = control
+			_set_control(index, control[0],
+				control[1], control[2])
 		elif current_control[1] == control[1]:
 			# This does not need any update.
 			pass
@@ -257,7 +317,11 @@ func _touch_update(index, control):
 			# The touch was active in a control,
 			# and now is still active but on
 			# another control.
-			pass
+			_TOUCHES[index] = control
+			_clear_control(index, current_control[0],
+				current_control[1], current_control[2])
+			_set_control(index, control[0],
+				control[1], control[2])
 
 
 func _touch_active(index, position):
@@ -293,46 +357,25 @@ func _relese_all_touches():
 
 
 func _input(event):
-	var position
-	var pressed
-	var index
-	var button
-	# if event is InputEventScreenTouch:
-	# 	position = event.position
-	# 	pressed = event.pressed
-	# 	index = event.index
-	# 	button = null
-	# 	if pressed:
-	# 		if index not in _TOUCHES:
-	# 			button = _find_button(position)
-	# 			if button:
-	# 				_TOUCHES[index] = button
-	# 				button[1].pressed = true
-	# 				# TODO the buttons were pressed.
-	# 	else:
-	# 		if index in _TOUCHES:
-	# 			button = _TOUCHES[index]
-	# 			button.pressed = false
-	# 			_TOUCHES.erase(index)
-	# 			# TODO the buttons were released.
-	# elif event is InputEventScreenDrag:
-	# 	position = event.position
-	# 	index = event.index
-	# 	button = _find_button(position)
-	# 	if button != null:
-	# 		if index not in _TOUCHES:
-	# 			_TOUCHES[index] = button
-	# 			button[1].pressed = true
-	# 			# TODO the buttons were pressed.
-	# 		else:
-	# 			# Index is present: update the buttons.
-	# 			pass
+	# PRIOR CHECK: Whether we allow or ignore the input.
+	
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_touch_active(event.index, event.position)
+		else:
+			_touch_released(event.index)
+	elif event is InputEventScreenDrag:
+		_touch_active(event.index, event.position)
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_collect_controls()
 
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	var diff = _calculate_state_diff()
+	if len(diff):
+		print(diff)
+	_update_state()
