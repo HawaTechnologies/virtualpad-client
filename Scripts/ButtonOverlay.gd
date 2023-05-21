@@ -147,7 +147,6 @@ func _find_control(position):
 	"""
 
 	for button in _BUTTONS:
-		print("Rect: ",button[0], " point: ", position)
 		if button[0].has_point(position):
 			# (mapped keys, button node, true)
 			# - The mapped keys (one or two) to press/release.
@@ -155,7 +154,6 @@ func _find_control(position):
 			# - false: It is a button, not an analog.
 			return [button[1], button[2], false]
 	for analog in _ANALOGS:
-		print("Rect: ", analog[0], " point: ", position)
 		if analog[0].has_point(position):
 			# (mapped keys, button node, true)
 			# - The mapped keys (always two: x, y) to change/release.
@@ -254,6 +252,7 @@ func _clear_control(index, keys, control, is_analog):
 	if _TOUCHED_CONTROLS[control] == 0:
 		if is_analog:
 			# Clear an analog to 127 in both keys.
+			print("Clearing analog keys: ", keys)
 			for key in keys:
 				_modify_state(key, 127)
 		else:
@@ -262,7 +261,7 @@ func _clear_control(index, keys, control, is_analog):
 				_modify_state(key, 0)
 
 
-func _set_control(index, keys, control, is_analog, position):
+func _set_control(index, keys, control, is_analog, position, add_touch=true):
 	"""
 	Sets a touch index (and its control). Also sets the
 	corresponding states.
@@ -270,10 +269,11 @@ func _set_control(index, keys, control, is_analog, position):
 
 	if not is_analog:
 		control.button_pressed = true
-	if _TOUCHED_CONTROLS.get(control, -1) < 0:
-		_TOUCHED_CONTROLS[control] = 1
-	else:
-		_TOUCHED_CONTROLS[control] += 1
+	if add_touch:
+		if _TOUCHED_CONTROLS.get(control, -1) < 0:
+			_TOUCHED_CONTROLS[control] = 1
+		else:
+			_TOUCHED_CONTROLS[control] += 1
 	if is_analog:
 		# Clear an analog to 127 in both keys.
 		var r = _get_analog_pos(control, position)
@@ -295,10 +295,6 @@ func _touch_update(index, control, position):
 	# [keys, control, is_analog]. We'll do a match
 	# by the contents of index [1].
 	var current_control = _TOUCHES.get(index, null)
-	print("Touch update: ", index, " at: ", position,
-		" (control: ", current_control[1] if current_control != null else null,
-		")")
-	
 	if control == null:
 		if current_control == null:
 			# This does not need any update.
@@ -320,8 +316,11 @@ func _touch_update(index, control, position):
 			_set_control(index, control[0],
 				control[1], control[2], position)
 		elif current_control[1] == control[1]:
-			# This does not need any update.
-			pass
+			# This does not need any update on
+			# buttons, but does on analogs.
+			if current_control[2]:
+				_set_control(index, control[0], control[1],
+					control[2], position, false)
 		else:
 			# The touch was active in a control,
 			# and now is still active but on
