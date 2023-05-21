@@ -160,6 +160,69 @@ func _find_control(position):
 	return null
 
 
+# The touches are kept in a mapping like this: {index} => {control},
+# where the control is, in native terms, a button. When the button
+# changes for that index, the current value will be compared and
+# then updated to the new value (the value will be a button). When
+# a touch release event is processed, the value will be cleared and
+# everything will be processed accordingly.
+var _TOUCHES = {}
+
+
+# The touched controls mapping is, to some extent, the inverse of the
+# previous mapping. It will tell what components are touched and how
+# many times. This one is updated simultaneously with the previous
+# mapping.
+var _TOUCHED_CONTROLS = {}
+
+
+# This is the current state. No button/axis is pressed by this time.
+# This old state is always compared to a new state to tell which ones
+# are the differences to be updated.
+var _current_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					  127, 127, 127, 127]
+
+
+# This is the new state. Pressing and releasing buttons or axes makes
+# changes into this array. Later, this array is compared and then the
+# changes are sent through the connection.
+var _new_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				  127, 127, 127, 127]
+
+
+func _modify_state(index, value):
+	"""
+	Modifies the new state with a value.
+	"""
+	
+	_new_state[index] = value
+
+
+func _calculate_state_diff():
+	"""
+	Computes the state differences. Returns the pairs of index
+	and value that they differ on.
+	"""
+	
+	var differences = []
+	var index = 0
+	for value in _new_state:
+		if value != _current_state[index]:
+			differences.append([index, value])
+		index += 1
+
+
+func _update_state():
+	"""
+	Updates the current state from the new state.
+	"""
+	
+	var index = 0
+	for value in _new_state:
+		_current_state[index] = value
+		index += 1
+
+
 func _input(event):
 	var position
 	var pressed
