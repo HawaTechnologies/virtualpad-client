@@ -75,33 +75,88 @@ var _BUTTONS = []
 #        127 in the exact middle.
 #
 # This is only populated on startup.
-var _AXES = []
+var _ANALOGS = []
 
 
-# These are the touches (in terms of the touch screen) that
-# are being tracked. Each touch will consist of:
-# - key: the touch index.
-# - value: the last element being touched (which can be an
-#          analog axis, or a button, or nothing).
-#
-# Axes are a different kind of component, actually. They're
-# composed of a background (main) component which is just a
-# rectangle with a circular design.
-#
-# The goal of this structure is to track for the fingers
-# move across touches.
-var _TOUCHES = {}
+func _collect_controls():
+	"""
+	Collects all the controls that can send a key and all the
+	related keys to send and their types. Controls' types are
+	either button or analog stick, and they'll never overlap.
+	They'll be collected in two different collections: one is
+	intended for buttons, and another one is intended for the
+	analog sticks.
+	"""
+	
+	_BUTTONS.clear()
+	_ANALOGS.clear()
+	for child in get_tree().get_nodes_in_group("ThemedButtons"):
+		# We'll be populating both the buttons that will
+		# serve as "buttons" and those that will serve as
+		# "analogs" (they work as pairs of axes). Most of
+		# the buttons will have only ONE key, except for
+		# the D-Pad diagonals. Also, all the analogs will
+		# have TWO keys, which are pairs of axes: (X, Y).
+
+		# First, determine whether it is an analog or button.
+		var is_analog = child.get_meta("is_analog") == true
+		var target = _ANALOGS
+		var keys_source = _axes_by_name
+		if not is_analog:
+			target = _BUTTONS
+			keys_source = _buttons_by_name
+
+		# Then, add the tuple (rect, keys, button) for each
+		# button or axis, accordingly.
+		#
+		# Buttons, on pressed, will send one or more keys
+		# simultaneously and, on released, will un-send
+		# those keys.
+		# 
+		# Axes, on the other hand, will send always two keys
+		# (standing for their axes) and based on their trig
+		# distances to the center (on press), and will send
+		# the pair (127, 127) otherwise (on release).
+		var keys = child.get_meta("keys")
+		if keys != null:
+			var mapped_keys = []
+			for key in keys:
+				mapped_keys.append(keys_source[key])
+			target.append([
+				Rect2(child.global_position, child.size),
+				mapped_keys, child
+			])
 
 
-# The current and new states of all the buttons and axes.
-var _current_state = []
-var _new_state = []
+func _find_control(position):
+	""""
+	Finds a button or an analog stick at a given position.
+	By design, a given position will only match one single
+	button or analog (no two of them at all).
+	
+	In the worst case, it does not find any component at
+	the current position (returns null in that case). In
+	the best case, it returns a triple of:
+	
+	- The mapped keys or axes of the involved component.
+	- The control for the button or analog stick.
+	- A boolean telling whether the control is an analog.
+	"""
 
-
-func _find_button(position):
-	for setting in _BUTTONS:
-		if setting[0].has_point(position):
-			return [setting[1], setting[2]]
+	for button in _BUTTONS:
+		if button[0].has_point(position):
+			# (mapped keys, button node, true)
+			# - The mapped keys (one or two) to press/release.
+			# - The button node (control).
+			# - false: It is a button, not an analog.
+			return [button[1], button[2], false]
+	for analog in _ANALOGS:
+		if analog[0].has_point(position):
+			# (mapped keys, button node, true)
+			# - The mapped keys (always two: x, y) to change/release.
+			# - The analog node (control).
+			# - true: It is an analog.
+			return [analog[1], analog[2], true]
 	return null
 
 
@@ -110,53 +165,41 @@ func _input(event):
 	var pressed
 	var index
 	var button
-	if event is InputEventScreenTouch:
-		position = event.position
-		pressed = event.pressed
-		index = event.index
-		button = null
-		if pressed:
-			if index not in _TOUCHES:
-				button = _find_button(position)
-				if button:
-					_TOUCHES[index] = button
-					button[1].pressed = true
-					# TODO the buttons were pressed.
-		else:
-			if index in _TOUCHES:
-				button = _TOUCHES[index]
-				button.pressed = false
-				_TOUCHES.erase(index)
-				# TODO the buttons were released.
-	elif event is InputEventScreenDrag:
-		position = event.position
-		index = event.index
-		button = _find_button(position)
-		if button != null:
-			if index not in _TOUCHES:
-				_TOUCHES[index] = button
-				button[1].pressed = true
-				# TODO the buttons were pressed.
-			else:
-				# Index is present: update the buttons.
-				pass
+	# if event is InputEventScreenTouch:
+	# 	position = event.position
+	# 	pressed = event.pressed
+	# 	index = event.index
+	# 	button = null
+	# 	if pressed:
+	# 		if index not in _TOUCHES:
+	# 			button = _find_button(position)
+	# 			if button:
+	# 				_TOUCHES[index] = button
+	# 				button[1].pressed = true
+	# 				# TODO the buttons were pressed.
+	# 	else:
+	# 		if index in _TOUCHES:
+	# 			button = _TOUCHES[index]
+	# 			button.pressed = false
+	# 			_TOUCHES.erase(index)
+	# 			# TODO the buttons were released.
+	# elif event is InputEventScreenDrag:
+	# 	position = event.position
+	# 	index = event.index
+	# 	button = _find_button(position)
+	# 	if button != null:
+	# 		if index not in _TOUCHES:
+	# 			_TOUCHES[index] = button
+	# 			button[1].pressed = true
+	# 			# TODO the buttons were pressed.
+	# 		else:
+	# 			# Index is present: update the buttons.
+	# 			pass
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_BUTTONS.clear()
-	_AXES.clear()
-	var count = 0
-	for child in get_tree().get_nodes_in_group("ThemedButtons"):
-		var target = _AXES
-		if count < 14:
-			target = _BUTTONS
-		target.append([
-			Rect2(child.rect_global_position, child.rect_size),
-			child.get_meta("keys"), child
-		])
-		count += 1
-
+	_collect_controls()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
