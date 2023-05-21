@@ -100,11 +100,18 @@ func _collect_controls():
 
 		# First, determine whether it is an analog or button.
 		var is_analog = child.get_meta("is_analog") == true
-		var target = _ANALOGS
-		var keys_source = _axes_by_name
-		if not is_analog:
-			target = _BUTTONS
-			keys_source = _buttons_by_name
+		var target = _ANALOGS if is_analog else _BUTTONS
+		var keys = child.get_meta("keys")
+		keys = keys if keys != null else []
+
+		var mapped_keys = []
+		if is_analog:
+			for key in keys:
+				for axis in _axes_by_name[key]:
+					mapped_keys.append(axis)
+		else:
+			for key in keys:
+				mapped_keys.append(_buttons_by_name[key])
 
 		# Then, add the tuple (rect, keys, button) for each
 		# button or axis, accordingly.
@@ -117,11 +124,7 @@ func _collect_controls():
 		# (standing for their axes) and based on their trig
 		# distances to the center (on press), and will send
 		# the pair (127, 127) otherwise (on release).
-		var keys = child.get_meta("keys")
-		if keys != null:
-			var mapped_keys = []
-			for key in keys:
-				mapped_keys.append(keys_source[key])
+		if len(mapped_keys):
 			target.append([
 				Rect2(child.global_position, child.size),
 				mapped_keys, child
@@ -144,6 +147,7 @@ func _find_control(position):
 	"""
 
 	for button in _BUTTONS:
+		print("Rect: ",button[0], " point: ", position)
 		if button[0].has_point(position):
 			# (mapped keys, button node, true)
 			# - The mapped keys (one or two) to press/release.
@@ -151,6 +155,7 @@ func _find_control(position):
 			# - false: It is a button, not an analog.
 			return [button[1], button[2], false]
 	for analog in _ANALOGS:
+		print("Rect: ", analog[0], " point: ", position)
 		if analog[0].has_point(position):
 			# (mapped keys, button node, true)
 			# - The mapped keys (always two: x, y) to change/release.
@@ -242,7 +247,7 @@ func _clear_control(index, keys, control, is_analog):
 	"""
 
 	if not is_analog:
-		control.pressed = false
+		control.button_pressed = false
 	_TOUCHED_CONTROLS[control] -= 1
 	if _TOUCHED_CONTROLS[control] < 0:
 		_TOUCHED_CONTROLS[control] = 0
@@ -257,19 +262,19 @@ func _clear_control(index, keys, control, is_analog):
 				_modify_state(key, 0)
 
 
-func _set_control(index, keys, control, is_analog):
+func _set_control(index, keys, control, is_analog, position):
 	"""
 	Sets a touch index (and its control). Also sets the
 	corresponding states.
 	"""
 
 	if not is_analog:
-		control.pressed = true
+		control.button_pressed = true
 	if _TOUCHED_CONTROLS.get(control, -1) < 0:
 		_TOUCHED_CONTROLS[control] = 1
 	else:
 		_TOUCHED_CONTROLS[control] += 1
-	if control[2]:
+	if is_analog:
 		# Clear an analog to 127 in both keys.
 		var r = _get_analog_pos(control, position)
 		_modify_state(keys[0], r.x)
@@ -280,7 +285,7 @@ func _set_control(index, keys, control, is_analog):
 			_modify_state(key, 1)
 
 
-func _touch_update(index, control):
+func _touch_update(index, control, position):
 	"""
 	Updates the data of a current touch. The control
 	is either null or [keys, control, is_analog].
@@ -289,7 +294,11 @@ func _touch_update(index, control):
 	# The current control is also either null or
 	# [keys, control, is_analog]. We'll do a match
 	# by the contents of index [1].
-	var current_control = _TOUCHES.get(index)
+	var current_control = _TOUCHES.get(index, null)
+	print("Touch update: ", index, " at: ", position,
+		" (control: ", current_control[1] if current_control != null else null,
+		")")
+	
 	if control == null:
 		if current_control == null:
 			# This does not need any update.
@@ -309,7 +318,7 @@ func _touch_update(index, control):
 			# on one control.
 			_TOUCHES[index] = control
 			_set_control(index, control[0],
-				control[1], control[2])
+				control[1], control[2], position)
 		elif current_control[1] == control[1]:
 			# This does not need any update.
 			pass
@@ -320,8 +329,8 @@ func _touch_update(index, control):
 			_TOUCHES[index] = control
 			_clear_control(index, current_control[0],
 				current_control[1], current_control[2])
-			_set_control(index, control[0],
-				control[1], control[2])
+			_set_control(index, control[0], control[1],
+				control[2], position)
 
 
 func _touch_active(index, position):
@@ -330,7 +339,7 @@ func _touch_active(index, position):
 	the touch mappings properly.
 	"""
 	
-	_touch_update(index, _find_control(position))
+	_touch_update(index, _find_control(position), position)
 
 
 func _touch_released(index):
@@ -339,7 +348,7 @@ func _touch_released(index):
 	mappings properly.
 	"""
 	
-	_touch_update(index, null)
+	_touch_update(index, null, Vector2.INF)
 
 
 func _relese_all_touches():
@@ -351,7 +360,7 @@ func _relese_all_touches():
 	"""
 	
 	for index in Array(_TOUCHES.values()):
-		_touch_update(index, null)
+		_touch_update(index, null, Vector2.INF)
 	_new_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 					127, 127, 127, 127]
 

@@ -57,6 +57,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-up"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["up"]
 
 [node name="Up-Left" type="Button" parent="Buttons/D-Pad"]
 layout_mode = 1
@@ -77,6 +78,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-up-left"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["up", "left"]
 
 [node name="Up-Right" type="Button" parent="Buttons/D-Pad"]
 layout_mode = 1
@@ -97,6 +99,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-up-right"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["up", "right"]
 
 [node name="Left" type="Button" parent="Buttons/D-Pad"]
 layout_mode = 1
@@ -117,6 +120,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-left"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["left"]
 
 [node name="Right" type="Button" parent="Buttons/D-Pad"]
 layout_mode = 1
@@ -137,6 +141,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-right"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["right"]
 
 [node name="Down-Left" type="Button" parent="Buttons/D-Pad"]
 layout_mode = 1
@@ -157,6 +162,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-down-left"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["down", "left"]
 
 [node name="Down-Right" type="Button" parent="Buttons/D-Pad"]
 layout_mode = 1
@@ -177,6 +183,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-down-right"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["down", "right"]
 
 [node name="Down" type="Button" parent="Buttons/D-Pad"]
 layout_mode = 1
@@ -197,6 +204,7 @@ script = ExtResource("10_ayox1")
 metadata/shape = "pad-down"
 metadata/color = "white"
 metadata/is_analog = false
+metadata/keys = ["down"]
 
 [node name="Actions" type="Control" parent="Buttons"]
 layout_mode = 1
@@ -230,6 +238,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "big-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["north"]
 
 [node name="East" type="Button" parent="Buttons/Actions"]
 layout_mode = 1
@@ -250,6 +259,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "big-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["east"]
 
 [node name="South" type="Button" parent="Buttons/Actions"]
 layout_mode = 1
@@ -270,6 +280,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "big-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["south"]
 
 [node name="West" type="Button" parent="Buttons/Actions"]
 layout_mode = 1
@@ -290,6 +301,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "big-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["west"]
 
 [node name="Shoulders" type="Control" parent="Buttons"]
 layout_mode = 1
@@ -312,6 +324,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "small-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["l1"]
 
 [node name="L2" type="Button" parent="Buttons/Shoulders"]
 layout_mode = 1
@@ -327,6 +340,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "small-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["l2"]
 
 [node name="R2" type="Button" parent="Buttons/Shoulders"]
 layout_mode = 1
@@ -345,6 +359,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "small-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["r2"]
 
 [node name="R1" type="Button" parent="Buttons/Shoulders"]
 layout_mode = 1
@@ -363,6 +378,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "small-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["r1"]
 
 [node name="Analogs" type="Control" parent="Buttons"]
 layout_mode = 1
@@ -387,6 +403,7 @@ grow_vertical = 2
 script = ExtResource("3_denh2")
 metadata/color = "white"
 metadata/is_analog = true
+metadata/keys = ["analog_left"]
 
 [node name="RightAxis" type="Button" parent="Buttons/Analogs"]
 layout_mode = 1
@@ -400,6 +417,7 @@ grow_vertical = 2
 script = ExtResource("3_denh2")
 metadata/color = "white"
 metadata/is_analog = true
+metadata/keys = ["analog_right"]
 
 [node name="Main" type="Control" parent="Buttons"]
 layout_mode = 1
@@ -429,6 +447,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "small-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["select"]
 
 [node name="Start" type="Button" parent="Buttons/Main"]
 layout_mode = 1
@@ -448,6 +467,7 @@ script = ExtResource("10_ayox1")
 metadata/color = "white"
 metadata/shape = "small-corner-radius"
 metadata/is_analog = false
+metadata/keys = ["start"]
 
 [node name="Themes" type="Control" parent="."]
 layout_mode = 1
