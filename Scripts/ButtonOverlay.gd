@@ -364,8 +364,41 @@ func _relese_all_touches():
 					127, 127, 127, 127]
 
 
+# Tells whether the control is enabled. By default,
+# the control is not enabled and buttons won't be
+# paid attention to.
+var _control_enabled = false
+var _control_callback_node = null
+
+
+func enable_control(callback_node):
+	"""
+	Public method. Enables the control with a certain
+	callback to invoke for the keys. The callback node
+	must define a `gamepad_input(btns)` function where
+	btns is an array of (key, flag|axis) pairs to send
+	to the underlying element.
+	"""
+
+	_control_enabled = true
+	_control_callback_node = callback_node
+
+
+func disable_control():
+	"""
+	Public method. Disables the control with a certain
+	callback to invoke for the keys.
+	"""
+
+	_control_enabled = false
+	_control_callback_node = null
+	_relese_all_touches()
+	_update_state()
+
+
 func _input(event):
-	# PRIOR CHECK: Whether we allow or ignore the input.
+	if not _control_enabled:
+		return
 	
 	if event is InputEventScreenTouch:
 		if event.pressed:
@@ -385,5 +418,5 @@ func _ready():
 func _process(delta):
 	var diff = _calculate_state_diff()
 	if len(diff):
-		print(diff)
+		_control_callback_node.gamepad_input(diff)
 	_update_state()
