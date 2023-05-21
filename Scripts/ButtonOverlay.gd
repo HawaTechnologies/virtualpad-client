@@ -180,14 +180,14 @@ var _TOUCHED_CONTROLS = {}
 # This old state is always compared to a new state to tell which ones
 # are the differences to be updated.
 var _current_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-					  127, 127, 127, 127]
+						127, 127, 127, 127]
 
 
 # This is the new state. Pressing and releasing buttons or axes makes
 # changes into this array. Later, this array is compared and then the
 # changes are sent through the connection.
 var _new_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-				  127, 127, 127, 127]
+					127, 127, 127, 127]
 
 
 func _modify_state(index, value):
@@ -210,6 +210,7 @@ func _calculate_state_diff():
 		if value != _current_state[index]:
 			differences.append([index, value])
 		index += 1
+	return differences
 
 
 func _update_state():
@@ -221,6 +222,74 @@ func _update_state():
 	for value in _new_state:
 		_current_state[index] = value
 		index += 1
+
+
+func _touch_update(index, control):
+	"""
+	Updates the data of a current touch. The control
+	is either null or [keys, control, is_analog].
+	"""
+
+	# The current control is also either null or
+	# [keys, control, is_analog]. We'll do a match
+	# by the contents of index [1].
+	var current_control = _TOUCHES.get(index)
+	if control == null:
+		if current_control == null:
+			# This does not need any update.
+			pass
+		else:
+			# The current control is not null.
+			# This means that it must lose a
+			# touch among the potentially many
+			# that can hold.
+			pass
+	else:
+		if current_control == null:
+			# The touch was not active on any
+			# control, and now it is active
+			# on one control.
+			pass
+		elif current_control[1] == control[1]:
+			# This does not need any update.
+			pass
+		else:
+			# The touch was active in a control,
+			# and now is still active but on
+			# another control.
+			pass
+
+
+func _touch_active(index, position):
+	"""
+	Processes when a touch is pressed or changed. It updates
+	the touch mappings properly.
+	"""
+	
+	_touch_update(index, _find_control(position))
+
+
+func _touch_released(index):
+	"""
+	Processes when a touch is released. It updates the touch
+	mappings properly.
+	"""
+	
+	_touch_update(index, null)
+
+
+func _relese_all_touches():
+	"""
+	Forces a release of all the touches. It also releases
+	all the current state, if any. This is done just in
+	case (it might fail to reset the states for each one
+	that was released).
+	"""
+	
+	for index in Array(_TOUCHES.values()):
+		_touch_update(index, null)
+	_new_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					127, 127, 127, 127]
 
 
 func _input(event):
