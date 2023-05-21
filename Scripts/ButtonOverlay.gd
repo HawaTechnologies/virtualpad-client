@@ -368,30 +368,22 @@ func _relese_all_touches():
 # the control is not enabled and buttons won't be
 # paid attention to.
 var _control_enabled = false
-var _control_callback_node = null
 
 
-func enable_control(callback_node):
+func enable_control():
 	"""
-	Public method. Enables the control with a certain
-	callback to invoke for the keys. The callback node
-	must define a `gamepad_input(btns)` function where
-	btns is an array of (key, flag|axis) pairs to send
-	to the underlying element.
+	Public method. Enables the control.
 	"""
 
 	_control_enabled = true
-	_control_callback_node = callback_node
 
 
 func disable_control():
 	"""
-	Public method. Disables the control with a certain
-	callback to invoke for the keys.
+	Public method. Disables the control.
 	"""
 
 	_control_enabled = false
-	_control_callback_node = null
 	_relese_all_touches()
 	_update_state()
 
@@ -416,7 +408,13 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	"""
+	Processing this component means knowing when the
+	buttons / analogs were changed in some way and
+	then triggering the proper signal with them.
+	"""
+
 	var diff = _calculate_state_diff()
 	if len(diff):
-		_control_callback_node.gamepad_input(diff)
+		emit_signal("gamepad_input", diff)
 	_update_state()
