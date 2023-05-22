@@ -23,12 +23,10 @@ const INVALID_MODE = 5
 
 # Callbacks to process when a connection is: started (moves to
 # CONNECTING), approved (a successful log-in into an empty pad
-# slot -- moves to CONNECTED), failed (the connection has been
-# rejected at authentication time), closed (the connection was
+# slot -- moves to CONNECTED), and closed (the connection was
 # in CONNECTED state, and was closed).
 signal connection_started
 signal connection_approved
-signal connection_failed(reason)
 signal connection_closed(reason)
 
 
@@ -142,11 +140,10 @@ func gamepad_connect(host, index, password, nickname, mode=1):
 	var error = _stream.connect_to_host(host, 2357)
 	if error != OK:
 		_status = Status.DISCONNECTED
-		emit_signal("connection_failed", error)
 		return [false, true, error]
 	else:
 		_status = Status.CONNECTING
-		emit_signal("connection_started", error)
+		emit_signal("connection_started")
 		_stream.put_data(message)
 		return [true, false, OK]
 
@@ -181,6 +178,7 @@ func gamepad_disconnect():
 	if _stream.is_connected_to_host():
 		_stream.put_data([CLOSE_CONNECTION])
 		_stream.disconnect_from_host()
+		emit_signal("connection_closed", 0)
 	return true
 
 
