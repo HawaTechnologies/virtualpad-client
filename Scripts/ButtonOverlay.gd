@@ -48,6 +48,10 @@ var _axes_by_name = {
 }
 
 
+# Callback to process the gamepad events.
+signal gamepad_input(keys)
+
+
 # The buttons will be contained here. In this case, we'll keep
 # for each element (rect, key, button) being:
 # - rect: The button rect (remember: they're rectangular and
