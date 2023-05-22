@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=11 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://Scripts/ThemedButtons.gd" id="5_dx1r5"]
 [ext_resource type="Script" path="res://Scripts/ButtonOverlay.gd" id="8_q2lf1"]
 [ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
+[ext_resource type="Script" path="res://Scripts/Connector.gd" id="10_nld82"]
 
 [node name="Pad" type="Control"]
 layout_mode = 3
@@ -543,3 +544,7 @@ offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("8_q2lf1")
+
+[node name="Connection" type="Control" parent="."]
+anchors_preset = 0
+script = ExtResource("10_nld82")
