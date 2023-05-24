@@ -1,0 +1,10 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://bjnejegflqcax"]
+
+[ext_resource type="StyleBox" uid="uid://p67ggrdprvsp" path="res://Styles/form-button-normal.tres" id="1_c67md"]
+[ext_resource type="StyleBox" uid="uid://bg7yn2dmf6aw7" path="res://Styles/form-button-pressed.tres" id="2_hquun"]
+
+[resource]
+Button/styles/disabled = ExtResource("1_c67md")
+Button/styles/hover = ExtResource("1_c67md")
+Button/styles/normal = ExtResource("1_c67md")
+Button/styles/pressed = ExtResource("2_hquun")

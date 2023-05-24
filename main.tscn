@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=13 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
 [ext_resource type="Script" path="res://Scripts/Connector.gd" id="10_nld82"]
 [ext_resource type="Texture2D" uid="uid://dumq087sgcpy5" path="res://Graphics/rocks-panel.png" id="11_7txtb"]
+[ext_resource type="Theme" uid="uid://bjnejegflqcax" path="res://Styles/form-button.tres" id="13_nalao"]
 
 [node name="Pad" type="Control"]
 layout_mode = 3
@@ -556,6 +557,7 @@ grow_vertical = 2
 script = ExtResource("10_nld82")
 
 [node name="FormConnect" type="TextureRect" parent="Connection"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -587,6 +589,28 @@ text = "Connect to a Virtual Pad Server"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Connect" type="Button" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("13_nalao")
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
+text = "CONNECT"
+
 [node name="FormConnecting" type="TextureRect" parent="Connection"]
 visible = false
 layout_mode = 1
@@ -617,6 +641,24 @@ theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
 theme_override_font_sizes/font_size = 40
 text = "Connecting..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Content" type="Label" parent="Connection/FormConnecting"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = -20.0
+offset_bottom = -100.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Connecting to the server..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -653,8 +695,47 @@ text = "Connection Failed"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Content" type="Label" parent="Connection/FormConnectionFailed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = -20.0
+offset_bottom = -100.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GoBack" type="Button" parent="Connection/FormConnectionFailed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("13_nalao")
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
+text = "GO BACK
+"
+
 [node name="FormCloseConnection" type="TextureRect" parent="Connection"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -685,6 +766,71 @@ theme_override_font_sizes/font_size = 40
 text = "Close Connection?"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Content" type="Label" parent="Connection/FormCloseConnection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = -20.0
+offset_bottom = -100.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "You're about to close your virtual
+pad connection. Are you sure?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Yes" type="Button" parent="Connection/FormCloseConnection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("13_nalao")
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
+text = "YES
+"
+
+[node name="No" type="Button" parent="Connection/FormCloseConnection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("13_nalao")
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
+text = "NO"
 
 [node name="FormConnectionClosed" type="TextureRect" parent="Connection"]
 visible = false
@@ -719,3 +865,43 @@ text = "Connection Closed
 "
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Content" type="Label" parent="Connection/FormConnectionClosed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = -20.0
+offset_bottom = -100.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GoBack" type="Button" parent="Connection/FormConnectionClosed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("13_nalao")
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
+text = "GO BACK
+"
