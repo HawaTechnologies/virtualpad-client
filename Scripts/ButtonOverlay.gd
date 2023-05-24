@@ -373,8 +373,11 @@ func _relese_all_touches():
 # paid attention to.
 var _control_enabled = false
 
+# This is the connection component.
+var _connection = false
 
-func enable_control():
+
+func _enable_control():
 	"""
 	Public method. Enables the control.
 	"""
@@ -382,7 +385,7 @@ func enable_control():
 	_control_enabled = true
 
 
-func disable_control():
+func _disable_control(reason):
 	"""
 	Public method. Disables the control.
 	"""
@@ -408,6 +411,9 @@ func _input(event):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_collect_controls()
+	_connection = get_parent().get_node("Connection")
+	_connection.connect("connection_approved", self._enable_control)
+	_connection.connect("connection_closed", self._disable_control)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

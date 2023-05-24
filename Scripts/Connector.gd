@@ -38,6 +38,15 @@ var _timer : float = 0
 var _stream : StreamPeerTCP = StreamPeerTCP.new()
 
 
+# And finally, this is the related buttons overlay component.
+var _overlay = null
+
+
+func _ready():
+	_overlay = get_parent().get_node("ButtonOverlay")
+	_overlay.connect("gamepad_input", self._gamepad_send)
+
+
 func _ping_send(delta):
 	"""
 	Checks the timer and sends the ping.
@@ -148,7 +157,7 @@ func gamepad_connect(host, index, password, nickname, mode=1):
 		return [true, false, OK]
 
 
-func gamepad_send(data):
+func _gamepad_send(data):
 	"""
 	Attempts to send command data.
 	"""
