@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=12 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://Scripts/ButtonOverlay.gd" id="8_q2lf1"]
 [ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
 [ext_resource type="Script" path="res://Scripts/Connector.gd" id="10_nld82"]
+[ext_resource type="Texture2D" uid="uid://dumq087sgcpy5" path="res://Graphics/rocks-panel.png" id="11_7txtb"]
 
 [node name="Pad" type="Control"]
 layout_mode = 3
@@ -546,5 +547,175 @@ grow_vertical = 2
 script = ExtResource("8_q2lf1")
 
 [node name="Connection" type="Control" parent="."]
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("10_nld82")
+
+[node name="FormConnect" type="TextureRect" parent="Connection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_7txtb")
+
+[node name="Label" type="Label" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Connect to a Virtual Pad Server"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FormConnecting" type="TextureRect" parent="Connection"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_7txtb")
+
+[node name="Label" type="Label" parent="Connection/FormConnecting"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Connecting..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FormConnectionFailed" type="TextureRect" parent="Connection"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_7txtb")
+
+[node name="Label" type="Label" parent="Connection/FormConnectionFailed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Connection Failed"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FormCloseConnection" type="TextureRect" parent="Connection"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_7txtb")
+
+[node name="Label" type="Label" parent="Connection/FormCloseConnection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Close Connection?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FormConnectionClosed" type="TextureRect" parent="Connection"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_7txtb")
+
+[node name="Label" type="Label" parent="Connection/FormConnectionClosed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Connection Closed
+"
+horizontal_alignment = 1
+vertical_alignment = 1
