@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=14 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
 [ext_resource type="Script" path="res://Scripts/Connector.gd" id="10_nld82"]
 [ext_resource type="Texture2D" uid="uid://dumq087sgcpy5" path="res://Graphics/rocks-panel.png" id="11_7txtb"]
+[ext_resource type="Script" path="res://Scripts/RestrictedLineEdit.gd" id="13_ji1td"]
 [ext_resource type="Theme" uid="uid://bjnejegflqcax" path="res://Styles/form-button.tres" id="13_nalao"]
 
 [node name="Pad" type="Control"]
@@ -557,7 +558,6 @@ grow_vertical = 2
 script = ExtResource("10_nld82")
 
 [node name="FormConnect" type="TextureRect" parent="Connection"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -589,6 +589,22 @@ text = "Connect to a Virtual Pad Server"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="HostLabel" type="Label" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = -490.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Host name / IP Address"
+vertical_alignment = 1
+
 [node name="Connect" type="Button" parent="Connection/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
@@ -610,6 +626,117 @@ theme_override_colors/font_hover_pressed_color = Color(1, 0.698039, 0, 1)
 theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
 text = "CONNECT"
+
+[node name="PadAuthLabel" type="Label" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 180.0
+offset_right = -490.0
+offset_bottom = 240.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Pad & Password"
+vertical_alignment = 1
+
+[node name="NicknameLabel" type="Label" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 260.0
+offset_right = -490.0
+offset_bottom = 120.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.698039, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.662745, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 0.47451, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Nickname
+"
+vertical_alignment = 1
+
+[node name="Host" type="TextEdit" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 490.0
+offset_top = 100.0
+offset_right = -20.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme_override_colors/font_placeholder_color = Color(0.258824, 0.258824, 0.258824, 1)
+theme_override_font_sizes/font_size = 33
+placeholder_text = "192.168.abc.xyz"
+script = ExtResource("13_ji1td")
+metadata/allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789.-"
+
+[node name="Password" type="TextEdit" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 640.0
+offset_top = 180.0
+offset_right = -20.0
+offset_bottom = 240.0
+grow_horizontal = 2
+theme_override_colors/font_placeholder_color = Color(0.258824, 0.258824, 0.258824, 1)
+theme_override_font_sizes/font_size = 33
+placeholder_text = "wxyz"
+script = ExtResource("13_ji1td")
+metadata/max_length = 4
+metadata/allowed_chars = "abcdefghijklmnopqrstuvwxyz"
+
+[node name="Nickname" type="TextEdit" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 490.0
+offset_top = 260.0
+offset_right = -20.0
+offset_bottom = 320.0
+grow_horizontal = 2
+theme_override_colors/font_placeholder_color = Color(0.258824, 0.258824, 0.258824, 1)
+theme_override_font_sizes/font_size = 33
+text = "Player"
+placeholder_text = "Player"
+script = ExtResource("13_ji1td")
+metadata/max_length = 16
+metadata/allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+[node name="Pad" type="OptionButton" parent="Connection/FormConnect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 490.0
+offset_top = 180.0
+offset_right = -340.0
+offset_bottom = 240.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+alignment = 1
+item_count = 8
+selected = 0
+popup/item_0/text = "1"
+popup/item_0/id = 0
+popup/item_1/text = "2"
+popup/item_1/id = 1
+popup/item_2/text = "3"
+popup/item_2/id = 2
+popup/item_3/text = "4"
+popup/item_3/id = 3
+popup/item_4/text = "5"
+popup/item_4/id = 4
+popup/item_5/text = "6"
+popup/item_5/id = 5
+popup/item_6/text = "7"
+popup/item_6/id = 6
+popup/item_7/text = "8"
+popup/item_7/id = 7
 
 [node name="FormConnecting" type="TextureRect" parent="Connection"]
 visible = false
@@ -736,6 +863,7 @@ text = "GO BACK
 "
 
 [node name="FormCloseConnection" type="TextureRect" parent="Connection"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
