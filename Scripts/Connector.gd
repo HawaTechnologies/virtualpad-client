@@ -13,8 +13,8 @@ signal connection_closed
 
 
 # The messages.
-const CLOSE_CONNECTION = 18
-const PING = 19
+const CLOSE_CONNECTION = 19
+const PING = 20
 
 # The error types
 const SUCCESS = 0

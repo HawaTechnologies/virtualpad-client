@@ -93,7 +93,7 @@ func _collect_controls():
 	"""
 	
 	var keys = null
-	var mapped_keys = []
+	var mapped_keys = null
 	_BUTTONS.clear()
 	_ANALOGS.clear()
 	for child in get_tree().get_nodes_in_group("ThemedButtons"):
@@ -103,6 +103,7 @@ func _collect_controls():
 		keys = child.get_meta("keys")
 		keys = keys if keys != null else []
 
+		mapped_keys = []
 		for key in keys:
 			mapped_keys.append(_buttons_by_name[key])
 
@@ -124,6 +125,7 @@ func _collect_controls():
 		keys = child.get_meta("keys")
 		keys = keys if keys != null else []
 
+		mapped_keys = []
 		for key in keys:
 			for axis in _axes_by_name[key]:
 				mapped_keys.append(axis)
@@ -136,7 +138,7 @@ func _collect_controls():
 		# distances to the center (on press), and will send
 		# the pair (127, 127) otherwise (on release).
 		if len(mapped_keys):
-			_BUTTONS.append([
+			_ANALOGS.append([
 				Rect2(child.global_position, child.size),
 				mapped_keys, child
 			])
@@ -255,6 +257,7 @@ func _clear_control(index, keys, control, is_analog):
 	the corresponding states.
 	"""
 
+	print("Clearing control: ", index)
 	if not is_analog:
 		control.button_pressed = false
 	_TOUCHED_CONTROLS[control] -= 1
