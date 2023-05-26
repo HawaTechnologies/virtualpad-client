@@ -44,6 +44,40 @@ var _login_data = null
 var _overlay = null
 
 
+func _reload_settings():
+	"""
+	Loads the last connection's settings, if any.
+	"""
+
+	var config = ConfigFile.new()
+	print("Loading settings")
+
+	# Load existing settings if they exist
+	if config.load("user://settings.cfg") == OK:
+		print("Settings were found. Loading them")
+		var host = config.get_value("connection", "host", "")
+		var password = config.get_value("connection", "password", "")
+		var index = int(config.get_value("connection", "index", 0))
+		var nickname = config.get_value("connection", "nickname", "")
+		$FormConnect/Host.text = host
+		$FormConnect/Pad.selected = index
+		$FormConnect/Password.text = password
+		$FormConnect/Nickname.text = nickname
+
+
+func _save_settings():
+	"""
+	Saves the current connection's settings, if any.
+	"""
+
+	var config = ConfigFile.new()
+	config.set_value("connection", "host", $FormConnect/Host.text)
+	config.set_value("connection", "password", $FormConnect/Password.text)
+	config.set_value("connection", "index", $FormConnect/Pad.selected)
+	config.set_value("connection", "nickname", $FormConnect/Nickname.text)
+	config.save("user://settings.cfg")
+
+
 func _ready():
 	_overlay = get_parent().get_node("ButtonOverlay")
 	_overlay.connect("gamepad_input", self._gamepad_send)
@@ -62,6 +96,7 @@ func _ready():
 	$FormCloseConnection/No.connect(
 		"pressed", self._form_connection_close__no
 	)
+	_reload_settings()
 	_show_popup($FormConnect)
 
 
@@ -106,6 +141,7 @@ func _form_connect__connect():
 					$FormConnectionFailed/Content.text = "Already connected"
 			_show_popup($FormConnectionFailed)
 		_:
+			_save_settings()
 			_show_popup($FormConnecting)
 
 
@@ -114,6 +150,7 @@ func _form_connection_failed__go_back():
 	Closes this form, open the Connect form again.
 	"""
 	
+	_reload_settings()
 	_show_popup($FormConnect)
 
 
@@ -122,6 +159,7 @@ func _form_connection_closed__go_back():
 	Closes this form, open the Connect form again.
 	"""
 
+	_reload_settings()
 	_show_popup($FormConnect)
 
 
