@@ -21,20 +21,25 @@ const SUCCESS = 0
 const SOCKET_ERROR = 1
 const APP_ERROR = 2
 
-# Local errors for the connections.
+# Responses for the connections.
 const ALREADY_CONNECTED = 1
 const INVALID_PAD_INDEX = 2
 const INVALID_NICKNAME = 3
 const INVALID_PASSWORD = 4
 const INVALID_MODE = 5
+const PONG = 7
 
 
 # This is the status for the current connection. Also, a timer
 # is used to check to send ping commands properly. Also, the
-# reference to the socket.
+# reference to the socket. And also, a pong-tracking timer.
 var _status : Status = Status.DISCONNECTED
-var _timer : float = 0
+const PING_TIME : float = 3.0
+var _ping_timer : float = 0
 var _stream : StreamPeerTCP = StreamPeerTCP.new()
+const PONG_TIME : float = 10.0
+var _pong_timer : float = 0
+
 # Also, this is the login data to use. If not null, it will be
 # send-attempted to the server (and then set to null quickly).
 var _login_data = null
@@ -51,6 +56,9 @@ var _right_close = null
 # and this timer tracks that.
 const CLOSE_HOLD_TIME = 3.0
 var _close_timer = 0
+
+# This is the pong time. A constant to check against, and a
+# variable to track the time between pongs.
 
 
 func _reload_settings():
@@ -220,10 +228,21 @@ func _ping_send(delta):
 	Checks the timer and sends the ping.
 	"""
 
-	_timer += delta
-	if _timer > 3:
-		# Send [PING] every 3 seconds.
+	_ping_timer += delta
+	if _ping_timer > PING_TIME:
+		_ping_timer -= PING_TIME
 		_stream.put_data([PING])
+
+
+func _pong_check(delta):
+	"""
+	Checks the timer since the last pong and disconnects
+	if no pong received for a while.
+	"""
+
+	_pong_timer += delta
+	if _pong_timer > PONG_TIME:
+		_gamepad_disconnect()
 
 
 func _connection_termination_text(idx):
@@ -251,6 +270,8 @@ func _process_server_answer():
 				_show_popup(null)
 				$FormConnecting.visible = false
 				emit_signal("connection_approved")
+			PONG:
+				pass
 			_:
 				# Typical messages: 1, 4, and 5.
 				# Codes 2, 3, 6 become Unexpected Error.
@@ -299,7 +320,8 @@ func _process(delta):
 		_process_server_answer()
 	else:
 		# Clear ping, if any, and abort.
-		_timer = 0
+		_ping_timer = 0
+		_pong_timer = 0
 
 
 func _filter_only_letters(value, length):
