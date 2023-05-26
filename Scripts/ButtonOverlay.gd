@@ -92,44 +92,51 @@ func _collect_controls():
 	analog sticks.
 	"""
 	
+	var keys = null
+	var mapped_keys = []
 	_BUTTONS.clear()
 	_ANALOGS.clear()
 	for child in get_tree().get_nodes_in_group("ThemedButtons"):
-		# We'll be populating both the buttons that will
-		# serve as "buttons" and those that will serve as
-		# "analogs" (they work as pairs of axes). Most of
-		# the buttons will have only ONE key, except for
-		# the D-Pad diagonals. Also, all the analogs will
-		# have TWO keys, which are pairs of axes: (X, Y).
-
-		# First, determine whether it is an analog or button.
-		var is_analog = child.get_meta("is_analog") == true
-		var target = _ANALOGS if is_analog else _BUTTONS
-		var keys = child.get_meta("keys")
+		# We'll be populating the buttons that will serve
+		# as "buttons". Most of the buttons will have only
+		# ONE key, except for the D-Pad diagonals.
+		keys = child.get_meta("keys")
 		keys = keys if keys != null else []
 
-		var mapped_keys = []
-		if is_analog:
-			for key in keys:
-				for axis in _axes_by_name[key]:
-					mapped_keys.append(axis)
-		else:
-			for key in keys:
-				mapped_keys.append(_buttons_by_name[key])
+		for key in keys:
+			mapped_keys.append(_buttons_by_name[key])
 
 		# Then, add the tuple (rect, keys, button) for each
-		# button or axis, accordingly.
+		# button accordingly.
 		#
 		# Buttons, on pressed, will send one or more keys
 		# simultaneously and, on released, will un-send
 		# those keys.
+		if len(mapped_keys):
+			_BUTTONS.append([
+				Rect2(child.global_position, child.size),
+				mapped_keys, child
+			])
+	for child in get_tree().get_nodes_in_group("ThemedAxes"):
+		# We'll be populating the buttons that will serve
+		# as "analogs". All the analogs will have TWO keys,
+		# which are pairs of axes: (X, Y).
+		keys = child.get_meta("keys")
+		keys = keys if keys != null else []
+
+		for key in keys:
+			for axis in _axes_by_name[key]:
+				mapped_keys.append(axis)
+
+		# Then, add the tuple (rect, keys, analog) for each
+		# axis accordingly.
 		# 
-		# Axes, on the other hand, will send always two keys
+		# Axes, contrary to buttons, will send always 2 keys
 		# (standing for their axes) and based on their trig
 		# distances to the center (on press), and will send
 		# the pair (127, 127) otherwise (on release).
 		if len(mapped_keys):
-			target.append([
+			_BUTTONS.append([
 				Rect2(child.global_position, child.size),
 				mapped_keys, child
 			])
@@ -256,7 +263,6 @@ func _clear_control(index, keys, control, is_analog):
 	if _TOUCHED_CONTROLS[control] == 0:
 		if is_analog:
 			# Clear an analog to 127 in both keys.
-			print("Clearing analog keys: ", keys)
 			for key in keys:
 				_modify_state(key, 127)
 		else:
@@ -385,7 +391,7 @@ func _enable_control():
 	_control_enabled = true
 
 
-func _disable_control(reason):
+func _disable_control():
 	"""
 	Public method. Disables the control.
 	"""

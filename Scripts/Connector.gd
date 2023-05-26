@@ -8,6 +8,10 @@ extends Control
 enum Status {DISCONNECTED, LOGGING_IN, LOGGED_IN}
 
 
+signal connection_approved
+signal connection_closed
+
+
 # The messages.
 const CLOSE_CONNECTION = 18
 const PING = 19
@@ -172,15 +176,16 @@ func _process_server_answer():
 				_status = Status.LOGGED_IN
 				_show_popup(null)
 				$FormConnecting.visible = false
+				emit_signal("connection_approved")
 			_:
 				# Typical messages: 1, 4, and 5.
 				# Codes 2, 3, 6 become Unexpected Error.
 				_status = Status.DISCONNECTED
 				_stream.disconnect_from_host()
-				print("Close status is:", response[0])
 				$FormConnectionClosed/Label.text = _connection_termination_text(
 					response[0]
 				)
+				emit_signal("connection_closed")
 				_show_popup($FormConnectionClosed)
 
 
@@ -190,7 +195,6 @@ func _send_login():
 	"""
 
 	if _login_data != null:
-		print("Now, sending the log-in")
 		_stream.set_no_delay(true)
 		_stream.put_data(_login_data)
 		_login_data = null
@@ -211,7 +215,6 @@ func _process(delta):
 		return
 	
 	# First, sends the login if any.
-	print("Attempting log-in?")
 	_send_login()
 	
 	# Then, send the PING signal properly and update.
@@ -279,6 +282,7 @@ func _gamepad_send(data):
 	Attempts to send command data.
 	"""
 
+	print("Sending data: ", data)
 	if _status != Status.LOGGED_IN:
 		return false
 
@@ -306,6 +310,7 @@ func _gamepad_disconnect():
 		_stream.put_data([CLOSE_CONNECTION])
 		_stream.disconnect_from_host()
 		$FormConnectionClosed/Label.text = _connection_termination_text(5)
+		emit_signal("connection_closed")
 		_show_popup($FormConnectionClosed)
 	_status = Status.DISCONNECTED
 	return true
