@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=15 format=3 uid="uid://d1cgpv1hxw3ah"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
 [ext_resource type="Theme" uid="uid://7uwjyikt2e67" path="res://Styles/Themes/Dragon/dragon-button-miniround.tres" id="2_6ol8h"]
+[ext_resource type="Script" path="res://Scripts/ThemedImage.gd" id="2_rop60"]
 [ext_resource type="Script" path="res://Scripts/ThemeButton.gd" id="2_ysceq"]
 [ext_resource type="Theme" uid="uid://bp6iovalqqgky" path="res://Styles/Themes/Shark/shark-button-miniround.tres" id="3_6ednw"]
 [ext_resource type="Script" path="res://Scripts/ThemedAxis.gd" id="3_denh2"]
@@ -31,6 +32,18 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_dx1r5")
 metadata/default_color = "white"
+
+[node name="Background" type="TextureRect" parent="Buttons"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 3
+stretch_mode = 6
+script = ExtResource("2_rop60")
+metadata/color = "white"
 
 [node name="D-Pad" type="Control" parent="Buttons"]
 layout_mode = 1
