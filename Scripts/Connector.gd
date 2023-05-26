@@ -263,7 +263,6 @@ func _process_server_answer():
 
 	if _stream.get_available_bytes() > 0:
 		var response = _stream.get_data(_stream.get_available_bytes())
-		print("Response: ", response)
 		match response[1][0]:
 			0:
 				_status = Status.LOGGED_IN
