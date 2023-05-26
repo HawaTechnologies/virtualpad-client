@@ -486,71 +486,6 @@ metadata/shape = "small-corner-radius"
 metadata/is_analog = false
 metadata/keys = ["start"]
 
-[node name="Themes" type="Control" parent="."]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -43.0
-offset_right = 80.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="Black-Small" type="Button" parent="Themes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -40.0
-offset_right = 40.0
-theme = ExtResource("1_e2ulx")
-text = "⭐
-"
-script = ExtResource("2_ysceq")
-metadata/color = "black"
-
-[node name="White-Small" type="Button" parent="Themes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = -40.0
-offset_right = 80.0
-theme = ExtResource("1_cyruv")
-text = "⭐"
-script = ExtResource("2_ysceq")
-metadata/color = "white"
-
-[node name="Dragon-Small" type="Button" parent="Themes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 80.0
-offset_top = -40.0
-offset_right = 120.0
-theme = ExtResource("2_6ol8h")
-text = "⭐"
-script = ExtResource("2_ysceq")
-metadata/color = "dragon"
-
-[node name="Shark-Small" type="Button" parent="Themes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 120.0
-offset_top = -40.0
-offset_right = 160.0
-theme = ExtResource("3_6ednw")
-text = "⭐"
-script = ExtResource("2_ysceq")
-metadata/color = "shark"
-
 [node name="ButtonOverlay" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -566,12 +501,42 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -46.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("10_nld82")
 
+[node name="LeftDisconnect" type="Button" parent="Connection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -60.0
+offset_right = 240.0
+grow_vertical = 0
+text = "Hold both buttons
+3secs to disconnect"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-button"
+
+[node name="RightDisconnect" type="Button" parent="Connection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -60.0
+grow_vertical = 0
+text = "Hold both buttons
+3secs to disconnect"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-button"
+
 [node name="FormConnect" type="TextureRect" parent="Connection"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1047,3 +1012,68 @@ theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
 text = "GO BACK
 "
+
+[node name="Themes" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -43.0
+offset_right = 80.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Black-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+theme = ExtResource("1_e2ulx")
+text = "⭐
+"
+script = ExtResource("2_ysceq")
+metadata/color = "black"
+
+[node name="White-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -40.0
+offset_right = 80.0
+theme = ExtResource("1_cyruv")
+text = "⭐"
+script = ExtResource("2_ysceq")
+metadata/color = "white"
+
+[node name="Dragon-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -40.0
+offset_right = 120.0
+theme = ExtResource("2_6ol8h")
+text = "⭐"
+script = ExtResource("2_ysceq")
+metadata/color = "dragon"
+
+[node name="Shark-Small" type="Button" parent="Themes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = -40.0
+offset_right = 160.0
+theme = ExtResource("3_6ednw")
+text = "⭐"
+script = ExtResource("2_ysceq")
+metadata/color = "shark"

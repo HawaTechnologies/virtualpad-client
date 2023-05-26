@@ -170,6 +170,9 @@ func _set_borders(top_left, top_right, bottom_left, bottom_right):
 
 func _update_shape():
 	var shape = get_meta("shape")
+	if shape == "big-button":
+		# The two close buttons
+		_update_shape_big_pressure()		
 	if shape == "big-corner-radius":
 		# North, South, East, West.
 		_update_shape_big_pressure()

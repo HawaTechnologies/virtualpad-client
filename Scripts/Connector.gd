@@ -39,9 +39,14 @@ var _stream : StreamPeerTCP = StreamPeerTCP.new()
 # send-attempted to the server (and then set to null quickly).
 var _login_data = null
 
-
 # And finally, this is the related buttons overlay component.
 var _overlay = null
+
+# This timer, now, regulates the UI time. Pressing both close
+# connection buttons at once will open the "Close?" dialog,
+# and this timer tracks that.
+const CLOSE_HOLD_TIME = 3.0
+var _close_timer = 0
 
 
 func _reload_settings():
@@ -101,6 +106,10 @@ func _ready():
 
 
 func _show_popup(popup):
+	"""
+	Shows a pop-up and toggles the disconnect buttons.
+	"""
+	
 	$FormConnect.visible = false
 	$FormConnecting.visible = false
 	$FormCloseConnection.visible = false
@@ -108,6 +117,26 @@ func _show_popup(popup):
 	$FormConnectionFailed.visible = false
 	if popup != null:
 		popup.visible = true
+		$LeftDisconnect.visible = false
+		$RightDisconnect.visible = false
+	else:
+		$LeftDisconnect.visible = true
+		$RightDisconnect.visible = true
+
+
+func _check_close_buttons(delta):
+	"""
+	Checks whether the close buttons are being
+	simultaneously pressed for 3 seconds.
+	"""
+	
+	if not $LeftDisconnect.visible or not $LeftDisconnect.pressed or \
+		not $RightDisconnect.visible or not $RightDisconnect.pressed:
+			_close_timer = 0
+	else:
+		_close_timer += delta
+		if _close_timer >= CLOSE_HOLD_TIME:
+			_show_popup($FormCloseConnection)
 
 
 func _form_connect__connect():
