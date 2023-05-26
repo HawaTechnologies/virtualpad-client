@@ -42,6 +42,10 @@ var _login_data = null
 # And finally, this is the related buttons overlay component.
 var _overlay = null
 
+# Also the buttons to close the connection.
+var _left_close = null
+var _right_close = null
+
 # This timer, now, regulates the UI time. Pressing both close
 # connection buttons at once will open the "Close?" dialog,
 # and this timer tracks that.
@@ -86,6 +90,8 @@ func _save_settings():
 func _ready():
 	_overlay = get_parent().get_node("ButtonOverlay")
 	_overlay.connect("gamepad_input", self._gamepad_send)
+	_left_close = get_parent().get_node("Buttons/LeftDisconnect")
+	_right_close = get_parent().get_node("Buttons/RightDisconnect")
 	$FormConnect/Connect.connect(
 		"pressed", self._form_connect__connect
 	)
@@ -117,11 +123,11 @@ func _show_popup(popup):
 	$FormConnectionFailed.visible = false
 	if popup != null:
 		popup.visible = true
-		$LeftDisconnect.visible = false
-		$RightDisconnect.visible = false
+		_left_close.visible = false
+		_right_close.visible = false
 	else:
-		$LeftDisconnect.visible = true
-		$RightDisconnect.visible = true
+		_left_close.visible = true
+		_right_close.visible = true
 
 
 func _check_close_buttons(delta):
@@ -130,8 +136,8 @@ func _check_close_buttons(delta):
 	simultaneously pressed for 3 seconds.
 	"""
 	
-	if not $LeftDisconnect.visible or not $LeftDisconnect.pressed or \
-		not $RightDisconnect.visible or not $RightDisconnect.pressed:
+	if not _left_close.visible or not _left_close.button_pressed or \
+		not _right_close.visible or not _right_close.button_pressed:
 			_close_timer = 0
 	else:
 		_close_timer += delta
@@ -238,7 +244,8 @@ func _process_server_answer():
 
 	if _stream.get_available_bytes() > 0:
 		var response = _stream.get_data(_stream.get_available_bytes())
-		match response[0]:
+		print("Response: ", response)
+		match response[1][0]:
 			0:
 				_status = Status.LOGGED_IN
 				_show_popup(null)
@@ -250,7 +257,7 @@ func _process_server_answer():
 				_status = Status.DISCONNECTED
 				_stream.disconnect_from_host()
 				$FormConnectionClosed/Label.text = _connection_termination_text(
-					response[0]
+					response[1][0]
 				)
 				emit_signal("connection_closed")
 				_show_popup($FormConnectionClosed)
@@ -275,20 +282,24 @@ func _process(delta):
 	is properly handled.
 	"""
 	
+	
+	_check_close_buttons(delta)
+	
+	# Socket interactions start here.
+	
 	_stream.poll()
-	if _stream.get_status() != StreamPeerTCP.STATUS_CONNECTED:
+	if _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+		# First, sends the login if any.
+		_send_login()
+		
+		# Then, send the PING signal properly and update.
+		_ping_send(delta)
+
+		# Then, process any server answer.
+		_process_server_answer()
+	else:
 		# Clear ping, if any, and abort.
 		_timer = 0
-		return
-	
-	# First, sends the login if any.
-	_send_login()
-	
-	# Then, send the PING signal properly and update.
-	_ping_send(delta)
-
-	# Then, process any server answer.
-	_process_server_answer()
 
 
 func _filter_only_letters(value, length):

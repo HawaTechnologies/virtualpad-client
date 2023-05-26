@@ -69,7 +69,7 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "	⬆"
+text = "▲"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-up"
 metadata/color = "white"
@@ -90,7 +90,6 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "↖"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-up-left"
 metadata/color = "white"
@@ -111,7 +110,6 @@ offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "↗"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-up-right"
 metadata/color = "white"
@@ -132,7 +130,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "⬅"
+text = "◀	"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-left"
 metadata/color = "white"
@@ -153,7 +151,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "➡"
+text = "▶"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-right"
 metadata/color = "white"
@@ -174,7 +172,6 @@ offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "↙"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-down-left"
 metadata/color = "white"
@@ -195,7 +192,6 @@ offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "↘"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-down-right"
 metadata/color = "white"
@@ -216,7 +212,7 @@ offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
-text = "⬇"
+text = "▼"
 script = ExtResource("10_ayox1")
 metadata/shape = "pad-down"
 metadata/color = "white"
@@ -486,6 +482,38 @@ metadata/shape = "small-corner-radius"
 metadata/is_analog = false
 metadata/keys = ["start"]
 
+[node name="LeftDisconnect" type="Button" parent="Buttons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -60.0
+offset_right = 240.0
+grow_vertical = 0
+toggle_mode = true
+text = "Hold both buttons
+3secs to disconnect"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-button"
+
+[node name="RightDisconnect" type="Button" parent="Buttons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -60.0
+grow_vertical = 0
+toggle_mode = true
+text = "Hold both buttons
+3secs to disconnect"
+script = ExtResource("10_ayox1")
+metadata/color = "white"
+metadata/shape = "big-button"
+
 [node name="ButtonOverlay" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -504,36 +532,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("10_nld82")
-
-[node name="LeftDisconnect" type="Button" parent="Connection"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -60.0
-offset_right = 240.0
-grow_vertical = 0
-text = "Hold both buttons
-3secs to disconnect"
-script = ExtResource("10_ayox1")
-metadata/color = "white"
-metadata/shape = "big-button"
-
-[node name="RightDisconnect" type="Button" parent="Connection"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -240.0
-offset_top = -60.0
-grow_vertical = 0
-text = "Hold both buttons
-3secs to disconnect"
-script = ExtResource("10_ayox1")
-metadata/color = "white"
-metadata/shape = "big-button"
 
 [node name="FormConnect" type="TextureRect" parent="Connection"]
 visible = false

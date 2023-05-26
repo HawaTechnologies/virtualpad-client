@@ -113,11 +113,10 @@ func _collect_controls():
 		# Buttons, on pressed, will send one or more keys
 		# simultaneously and, on released, will un-send
 		# those keys.
-		if len(mapped_keys):
-			_BUTTONS.append([
-				Rect2(child.global_position, child.size),
-				mapped_keys, child
-			])
+		_BUTTONS.append([
+			Rect2(child.global_position, child.size),
+			mapped_keys, child
+		])
 	for child in get_tree().get_nodes_in_group("ThemedAxes"):
 		# We'll be populating the buttons that will serve
 		# as "analogs". All the analogs will have TWO keys,
@@ -257,7 +256,6 @@ func _clear_control(index, keys, control, is_analog):
 	the corresponding states.
 	"""
 
-	print("Clearing control: ", index)
 	if not is_analog:
 		control.button_pressed = false
 	_TOUCHED_CONTROLS[control] -= 1
