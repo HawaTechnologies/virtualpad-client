@@ -177,6 +177,7 @@ func _process_server_answer():
 				# Codes 2, 3, 6 become Unexpected Error.
 				_status = Status.DISCONNECTED
 				_stream.disconnect_from_host()
+				print("Close status is:", response[0])
 				$FormConnectionClosed/Label.text = _connection_termination_text(
 					response[0]
 				)
@@ -218,12 +219,6 @@ func _process(delta):
 
 	# Then, process any server answer.
 	_process_server_answer()
-
-	# Finally, fix the status if the socket
-	# is not connected.
-	self._gamepad_disconnect()
-	$FormConnectionClosed/Label.text = _connection_termination_text(5)
-	_show_popup($FormConnectionClosed)
 
 
 func _filter_only_letters(value, length):

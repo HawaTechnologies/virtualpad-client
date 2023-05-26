@@ -126,5 +126,5 @@ func update_theme():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	add_to_group("ThemedButtons")
+	add_to_group("ThemedAxes")
 	update_theme()
