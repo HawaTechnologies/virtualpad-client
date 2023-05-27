@@ -22,12 +22,16 @@ const SOCKET_ERROR = 1
 const APP_ERROR = 2
 
 # Responses for the connections.
+# Application.
 const ALREADY_CONNECTED = 1
 const INVALID_PAD_INDEX = 2
 const INVALID_NICKNAME = 3
 const INVALID_PASSWORD = 4
 const INVALID_MODE = 5
+
+# Socket responses/notifications.
 const PONG = 7
+const TIMEOUT = 8
 
 
 # This is the status for the current connection. Also, a timer
@@ -39,6 +43,8 @@ var _ping_timer : float = 0
 var _stream : StreamPeerTCP = StreamPeerTCP.new()
 const PONG_TIME : float = 10.0
 var _pong_timer : float = 0
+# Also a timer to delay the disconnection.
+var _disconnect_timer : float = 0
 
 # Also, this is the login data to use. If not null, it will be
 # send-attempted to the server (and then set to null quickly).
@@ -242,7 +248,7 @@ func _pong_check(delta):
 
 	_pong_timer += delta
 	if _pong_timer > PONG_TIME:
-		_gamepad_disconnect()
+		_gamepad_disconnect(8)
 
 
 func _connection_termination_text(idx):
@@ -250,6 +256,7 @@ func _connection_termination_text(idx):
 		1: "Authentication failed",
 		4: "Pad already in use",
 		5: "Connection terminated successfully",
+		8: "Connection timed out",
 	}.get(idx, "Unexpected error (%d)" % idx)
 
 
@@ -274,6 +281,7 @@ func _process_server_answer():
 			_:
 				# Typical messages: 1, 4, and 5.
 				# Codes 2, 3, 6 become Unexpected Error.
+				self._gamepad_disconnect(response[1][0], false)
 				_status = Status.DISCONNECTED
 				_stream.disconnect_from_host()
 				$FormConnectionClosed/Label.text = _connection_termination_text(
@@ -308,7 +316,8 @@ func _process(delta):
 	# Socket interactions start here.
 	
 	_stream.poll()
-	if _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
+	var status = _stream.get_status()
+	if status == StreamPeerTCP.STATUS_CONNECTED:
 		# First, sends the login if any.
 		_send_login()
 		
@@ -318,9 +327,16 @@ func _process(delta):
 		# Then, process any server answer.
 		_process_server_answer()
 	else:
-		# Clear ping, if any, and abort.
+		# Clear ping, if any.
 		_ping_timer = 0
 		_pong_timer = 0
+	
+	if status in [StreamPeerTCP.STATUS_ERROR, StreamPeerTCP.STATUS_NONE] and \
+		_status in [Status.LOGGED_IN, Status.LOGGING_IN]:
+		_disconnect_timer += delta
+		_gamepad_disconnect()
+	else:
+		_disconnect_timer = 0
 
 
 func _filter_only_letters(value, length):
@@ -395,24 +411,26 @@ func _gamepad_send(data):
 	return true
 
 
-func _gamepad_disconnect():
+func _gamepad_disconnect(code = 5, send_terminate = false):
 	"""
 	Attempts to disconnect the socket.
 	"""
 
-	_stream.poll()
-	if _stream.get_status() not in [StreamPeerTCP.STATUS_CONNECTED,
-			StreamPeerTCP.STATUS_CONNECTING]:
-		return false
-
-	if _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-		_stream.put_data([CLOSE_CONNECTION])
-		_stream.disconnect_from_host()
-		$FormConnectionClosed/Label.text = _connection_termination_text(5)
-		emit_signal("connection_closed")
-		_show_popup($FormConnectionClosed)
 	_status = Status.DISCONNECTED
-	return true
+	_stream.poll()
+	var status = _stream.get_status()
+	var result = false
+	if status in [StreamPeerTCP.STATUS_CONNECTED,
+					StreamPeerTCP.STATUS_CONNECTING]:
+		if status == StreamPeerTCP.STATUS_CONNECTED and send_terminate:
+			_stream.put_data([CLOSE_CONNECTION])
+		_stream.disconnect_from_host()
+		result = true
+
+	$FormConnectionClosed/Label.text = _connection_termination_text(code)
+	emit_signal("connection_closed")
+	_show_popup($FormConnectionClosed)
+	return result
 
 
 func get_status():
