@@ -393,7 +393,7 @@ func _enable_control():
 	print("Enabling buttons")
 
 
-func _disable_control():
+func _disable_control(rt, r):
 	"""
 	Public method. Disables the control.
 	"""
