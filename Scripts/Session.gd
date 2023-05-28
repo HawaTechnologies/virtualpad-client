@@ -346,7 +346,7 @@ func session_send(data):
 		message.append(pair[1])
 	var result = _stream.put_data(message)
 	if result != OK:
-		emit_signal("debug_session_send_error")
+		emit_signal("debug_session_send_error", result)
 	return true
 
 
