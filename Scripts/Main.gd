@@ -146,7 +146,7 @@ func _session_ended(reason_type, reason):
 	Handler for when the session ended.
 	"""
 
-	if reason_type == _script.REASON_TYPE_LOCAL:
+	if reason_type == _script.REASON_TYPE_SERVER:
 		match reason:
 			_script.CLOSE_REASON_SERVER_TERMINATED:
 				$FormConnectionClosed/Content.text = "The gamepad was disconnected"
@@ -154,11 +154,11 @@ func _session_ended(reason_type, reason):
 				$FormConnectionClosed/Content.text = "The server lost any contact\nto this pad"
 			_:
 				$FormConnectionClosed/Content.text = "The connection\nunexpectedly ended"
-	elif reason_type == _script.REASON_TYPE_SERVER:
+	elif reason_type == _script.REASON_TYPE_LOCAL:
 		match reason:
 			_script.CLOSE_REASON_CLIENT_TERMINATED:
 				$FormConnectionClosed/Content.text = "Connection terminated successfully"
-			_script.FAIL_REASON_SERVER_PAD_BUSY:
+			_script.CLOSE_REASON_CLIENT_TIMEOUT:
 				$FormConnectionClosed/Content.text = "No activity was detected\nfrom the server"
 			_:
 				$FormConnectionClosed/Content.text = "Unknown error\nCheck your server settings"
