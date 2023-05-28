@@ -29,6 +29,10 @@ signal debug_pong_loop_started
 signal debug_pong_received
 # - The pong loop ended.
 signal debug_pong_loop_ended
+# - The data loop started.
+signal debug_data_loop_started
+# - The data loop ended.
+signal debug_data_loop_ended
 # - There was an error sending the data.
 signal debug_session_send_error(error)
 
@@ -220,6 +224,7 @@ func _data_arrival_loop():
 	It must be invoked when the session is starting.
 	"""
 
+	emit_signal("debug_data_loop_started")
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		await get_tree().process_frame
 		if _stream.get_available_bytes() > 0:
@@ -240,6 +245,7 @@ func _data_arrival_loop():
 					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TERMINATED)
 				_:
 					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_UNKNOWN)
+	emit_signal("debug_data_loop_ended")
 
 
 ############
