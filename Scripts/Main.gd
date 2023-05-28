@@ -83,6 +83,8 @@ func _ready():
 	$Session.connect("session_starting", self._session_starting)
 	$Session.connect("session_approved", self._session_approved)
 	$Session.connect("session_ended", self._session_ended)
+	$Session.connect("debug_data_loop_started", self._debug_data_loop_started)
+	$Session.connect("debug_data_loop_ended", self._debug_data_loop_ended)
 	$Session.connect("debug_ping_loop_started", self._debug_ping_loop_started)
 	$Session.connect("debug_ping_send_success", self._debug_ping_send_success)
 	$Session.connect("debug_ping_send_error", self._debug_ping_send_error)
@@ -169,6 +171,14 @@ func _session_ended(reason_type, reason):
 	else:
 		$FormConnectionClosed/Content.text = "Unknown error"
 	_show_popup($FormConnectionClosed)
+
+
+func _debug_data_loop_started():
+	print("Data loop started")
+
+
+func _debug_data_loop_ended():
+	print("Data loop ended")
 
 
 func _debug_ping_loop_started():
