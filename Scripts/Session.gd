@@ -13,8 +13,6 @@ signal session_failed(failure_type, failure_code)
 signal session_starting
 # - The session attempt succeeded.
 signal session_approved
-# - The session attempt failed (e.g. auth failure).
-signal session_rejected(reason)
 # - The session terminated (e.g. timeout).
 signal session_ended(reason_type, reason)
 # - A ping was sent to the server.
@@ -23,6 +21,8 @@ signal debug_ping_send_success
 signal debug_ping_send_error(error)
 # - A pong was received from the server.
 signal debug_pong_received
+# - There was an error sending the data.
+signal debug_session_send_error(error)
 
 # Reason types for closing/failure:
 const REASON_TYPE_LOCAL = 1000
@@ -33,6 +33,15 @@ const REASON_TYPE_SERVER = 2000
 const FAIL_REASON_SERVER_AUTH_FAILED = 1001
 # - The attempted pad is busy.
 const FAIL_REASON_SERVER_PAD_BUSY = 1002
+# - Invalid pad.
+const FAIL_REASON_CLIENT_INVALID_PAD = 2001
+# - Invalid password (not being 4 lowercase letters).
+const FAIL_REASON_CLIENT_INVALID_PASSWORD = 2002
+# - Invalid nickname (empty).
+const FAIL_REASON_CLIENT_INVALID_NICKNAME = 2003
+# - The attempted server could not be reached
+#   or something else happened.
+const FAIL_REASON_CLIENT_UNKNOWN = 2999
 
 # Close reasons:
 # - Graceful disconnection from the server (e.g. kick).
@@ -40,7 +49,7 @@ const CLOSE_REASON_SERVER_TERMINATED = 1001
 # - The server kicked the client due to timeout (lack of ping).
 const CLOSE_REASON_SERVER_TIMEOUT = 1002
 # - The server closed due to an unexpected error.
-const CLOSE_REASON_SERVER_UNEXPECTED = 1999
+const CLOSE_REASON_SERVER_UNKNOWN = 1999
 # - Graceful disconnection from the client.
 const CLOSE_REASON_CLIENT_TERMINATED = 2001
 # - The client never received a PONG timeout from the server.
@@ -59,10 +68,13 @@ const SERVER_NOTIFICATION_TIMEOUT = 8
 # This is the session status. It will be "active" when
 # between session_approved and session_ended. It will
 # be "starting" when between session_starting and
-# session_approved/session_rejected(reason). It will
+# session_approved/session_failed(server, ...). It will
 # be NONE in any other moment.
 enum SessionStatus { NONE, STARTING, ACTIVE }
 var _session_status : SessionStatus = SessionStatus.NONE
+
+# This is the mode the pad will use.
+var MODE_COMPATIBLE = 1
 
 
 ############
@@ -167,8 +179,9 @@ func _locally_close(reason_type, reason):
 	"""
 
 	_stream.disconnect_from_host()
-	_session_status = SessionStatus.NONE
-	emit_signal("session_ended", REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TIMEOUT)
+	if _session_status in [SessionStatus.ACTIVE, SessionStatus.STARTING]:
+		_session_status = SessionStatus.NONE
+		emit_signal("session_ended", reason_type, reason)
 
 
 func _locally_fail(reason_type, reason):
@@ -178,7 +191,7 @@ func _locally_fail(reason_type, reason):
 
 	_stream.disconnect_from_host()
 	_session_status = SessionStatus.NONE
-	emit_signal("session_failed", REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TIMEOUT)
+	emit_signal("session_failed", reason_type, reason)
 
 
 ############
@@ -214,7 +227,7 @@ func _data_arrival_loop():
 				SERVER_NOTIFICATION_TERMINATED:
 					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TERMINATED)
 				_:
-					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_UNEXPECTED)
+					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_UNKNOWN)
 
 
 ############
@@ -223,16 +236,118 @@ func _data_arrival_loop():
 ############
 
 
-func session_connect(host : String):
-	pass
+func _filter_only_letters(value, length):
+	"""
+	Filters a value to use only letters and a given length.
+	"""
+	
+	value = value.to_lower().strip_edges()
+	var filtered_value = ""
+	for character in value:
+		if character in "abcdefghijklmnopqrstuvwxyz":
+			filtered_value += character
+	return filtered_value.substr(0, length)
+
+
+func session_connect(
+	host : String, pad_index : int, password : String, nickname : String
+):
+	"""
+	Attempts a socket connection. It may fail due to server, due
+	to client settings (e.g. bad parameters) or due to auth or
+	pad settings. It will close any pre-existing connection.
+	
+	This is a co-routine that must be waited for.
+	"""
+
+	# First, disconnect the previous session, if any.
+	if _stream.get_status() != StreamPeerTCP.STATUS_NONE:
+		_locally_close(REASON_TYPE_LOCAL, CLOSE_REASON_CLIENT_TERMINATED)
+		await _wait_socket_status([
+			StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
+		])
+
+	# Then, prepare the message.
+	var message = PackedByteArray([])
+
+	# 1. Start by checking/adding the padd.
+	if pad_index < 0 or pad_index > 7:
+		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_INVALID_PAD)
+		return
+	message.append(pad_index)
+
+	# 2. Add the mode. It will be constant here.
+	message.append(MODE_COMPATIBLE)
+
+	# 3. Add the password.
+	password = _filter_only_letters(password, 4)
+	if len(password) != 4:
+		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_INVALID_PASSWORD)
+		return
+	message += password.to_utf8_buffer()
+
+	# 4. Add the nickname (pad it with spaces)
+	nickname = _filter_only_letters(nickname, 16)
+	if len(nickname) == 0:
+		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_INVALID_NICKNAME)
+		return
+	message += (nickname + " ".repeat(16 - len(nickname))).to_utf8_buffer()
+		
+	var error = _stream.connect_to_host(host, 2357)
+	if error != OK:
+		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_UNKNOWN)
+		return
+	else:
+		# Mark the session as starting, and wait until
+		# the socket is connected.
+		_session_status = SessionStatus.STARTING
+		await _wait_socket_status([StreamPeerTCP.STATUS_CONNECTED])
+		# Then, mark the session as starting and attempt the
+		# login message.
+		emit_signal("session_starting")
+		var result = _stream.put_data(message)
+		if result != OK:
+			_locally_close(REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_UNKNOWN)
+			await _wait_socket_status([
+				StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
+			])
+		else:
+			_ping_loop()
+			_pong_loop()
+			_data_arrival_loop()
 
 
 func session_disconnect():
-	pass
+	"""
+	Disconnects any existing connection.
+	
+	This is a co-routine that must be waited for.
+	"""
+	
+	_locally_close(REASON_TYPE_LOCAL, CLOSE_REASON_CLIENT_TERMINATED)
+	await _wait_socket_status([
+		StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
+	])
 
 
-func session_send():
-	pass
+func session_send(data):
+	"""
+	Attempts to send data.
+	"""
+
+	if _session_status != SessionStatus.ACTIVE:
+		return false
+
+	var message = PackedByteArray([len(data)])
+	for pair in data:
+		if not (pair is Array) or len(pair) != 2:
+			continue
+		message.append(pair[0])
+		message.append(pair[1])
+	var result = _stream.put_data(message)
+	if result != OK:
+		emit_signal("debug_session_send_error")
+	return true
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

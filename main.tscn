@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d1cgpv1hxw3ah"]
+[gd_scene load_steps=16 format=3 uid="uid://dtlgqkd0qnnx5"]
 
 [ext_resource type="Theme" uid="uid://hlyucaf2vow0" path="res://Styles/Themes/White/white-button-miniround.tres" id="1_cyruv"]
 [ext_resource type="Theme" uid="uid://ckcurf3t2cdhj" path="res://Styles/Themes/Black/black-button-miniround.tres" id="1_e2ulx"]
@@ -8,9 +8,10 @@
 [ext_resource type="Theme" uid="uid://bp6iovalqqgky" path="res://Styles/Themes/Shark/shark-button-miniround.tres" id="3_6ednw"]
 [ext_resource type="Script" path="res://Scripts/ThemedAxis.gd" id="3_denh2"]
 [ext_resource type="Script" path="res://Scripts/ThemedButtons.gd" id="5_dx1r5"]
+[ext_resource type="Script" path="res://Scripts/Main.gd" id="6_kv2hr"]
 [ext_resource type="Script" path="res://Scripts/ButtonOverlay.gd" id="8_q2lf1"]
 [ext_resource type="Script" path="res://Scripts/ThemedButton.gd" id="10_ayox1"]
-[ext_resource type="Script" path="res://Scripts/Connector.gd" id="10_nld82"]
+[ext_resource type="Script" path="res://Scripts/Session.gd" id="10_fg13d"]
 [ext_resource type="Texture2D" uid="uid://dumq087sgcpy5" path="res://Graphics/rocks-panel.png" id="11_7txtb"]
 [ext_resource type="Script" path="res://Scripts/RestrictedLineEdit.gd" id="13_ji1td"]
 [ext_resource type="Theme" uid="uid://bjnejegflqcax" path="res://Styles/form-button.tres" id="13_nalao"]
@@ -524,16 +525,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("8_q2lf1")
 
-[node name="Connection" type="Control" parent="."]
+[node name="Main" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("10_nld82")
+script = ExtResource("6_kv2hr")
 
-[node name="FormConnect" type="TextureRect" parent="Connection"]
+[node name="FormConnect" type="TextureRect" parent="Main"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -549,7 +550,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_7txtb")
 
-[node name="Label" type="Label" parent="Connection/FormConnect"]
+[node name="Label" type="Label" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -566,7 +567,7 @@ text = "Connect to a Virtual Pad Server"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HostLabel" type="Label" parent="Connection/FormConnect"]
+[node name="HostLabel" type="Label" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -582,7 +583,7 @@ theme_override_font_sizes/font_size = 40
 text = "Host name / IP Address"
 vertical_alignment = 1
 
-[node name="Connect" type="Button" parent="Connection/FormConnect"]
+[node name="Connect" type="Button" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -604,7 +605,7 @@ theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
 text = "CONNECT"
 
-[node name="PadAuthLabel" type="Label" parent="Connection/FormConnect"]
+[node name="PadAuthLabel" type="Label" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -620,7 +621,7 @@ theme_override_font_sizes/font_size = 40
 text = "Pad & Password"
 vertical_alignment = 1
 
-[node name="NicknameLabel" type="Label" parent="Connection/FormConnect"]
+[node name="NicknameLabel" type="Label" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -637,7 +638,7 @@ text = "Nickname
 "
 vertical_alignment = 1
 
-[node name="Host" type="TextEdit" parent="Connection/FormConnect"]
+[node name="Host" type="TextEdit" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -652,7 +653,7 @@ placeholder_text = "192.168.abc.xyz"
 script = ExtResource("13_ji1td")
 metadata/allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789.-"
 
-[node name="Password" type="TextEdit" parent="Connection/FormConnect"]
+[node name="Password" type="TextEdit" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -668,7 +669,7 @@ script = ExtResource("13_ji1td")
 metadata/max_length = 4
 metadata/allowed_chars = "abcdefghijklmnopqrstuvwxyz"
 
-[node name="Nickname" type="TextEdit" parent="Connection/FormConnect"]
+[node name="Nickname" type="TextEdit" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -685,7 +686,7 @@ script = ExtResource("13_ji1td")
 metadata/max_length = 16
 metadata/allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-[node name="Pad" type="OptionButton" parent="Connection/FormConnect"]
+[node name="Pad" type="OptionButton" parent="Main/FormConnect"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -715,7 +716,7 @@ popup/item_6/id = 6
 popup/item_7/text = "8"
 popup/item_7/id = 7
 
-[node name="FormConnecting" type="TextureRect" parent="Connection"]
+[node name="FormConnecting" type="TextureRect" parent="Main"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -731,7 +732,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_7txtb")
 
-[node name="Label" type="Label" parent="Connection/FormConnecting"]
+[node name="Label" type="Label" parent="Main/FormConnecting"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -748,7 +749,7 @@ text = "Connecting..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Content" type="Label" parent="Connection/FormConnecting"]
+[node name="Content" type="Label" parent="Main/FormConnecting"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -766,7 +767,7 @@ text = "Connecting to the server..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FormConnectionFailed" type="TextureRect" parent="Connection"]
+[node name="FormConnectionFailed" type="TextureRect" parent="Main"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -782,7 +783,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_7txtb")
 
-[node name="Label" type="Label" parent="Connection/FormConnectionFailed"]
+[node name="Label" type="Label" parent="Main/FormConnectionFailed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -799,7 +800,7 @@ text = "Connection Failed"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Content" type="Label" parent="Connection/FormConnectionFailed"]
+[node name="Content" type="Label" parent="Main/FormConnectionFailed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -816,7 +817,7 @@ theme_override_font_sizes/font_size = 40
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GoBack" type="Button" parent="Connection/FormConnectionFailed"]
+[node name="GoBack" type="Button" parent="Main/FormConnectionFailed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -839,7 +840,7 @@ theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
 text = "GO BACK
 "
 
-[node name="FormCloseConnection" type="TextureRect" parent="Connection"]
+[node name="FormCloseConnection" type="TextureRect" parent="Main"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -855,7 +856,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_7txtb")
 
-[node name="Label" type="Label" parent="Connection/FormCloseConnection"]
+[node name="Label" type="Label" parent="Main/FormCloseConnection"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -872,7 +873,7 @@ text = "Close Connection?"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Content" type="Label" parent="Connection/FormCloseConnection"]
+[node name="Content" type="Label" parent="Main/FormCloseConnection"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -891,7 +892,7 @@ pad connection. Are you sure?"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Yes" type="Button" parent="Connection/FormCloseConnection"]
+[node name="Yes" type="Button" parent="Main/FormCloseConnection"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -915,7 +916,7 @@ theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
 text = "YES
 "
 
-[node name="No" type="Button" parent="Connection/FormCloseConnection"]
+[node name="No" type="Button" parent="Main/FormCloseConnection"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -937,7 +938,7 @@ theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
 text = "NO"
 
-[node name="FormConnectionClosed" type="TextureRect" parent="Connection"]
+[node name="FormConnectionClosed" type="TextureRect" parent="Main"]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -953,7 +954,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("11_7txtb")
 
-[node name="Label" type="Label" parent="Connection/FormConnectionClosed"]
+[node name="Label" type="Label" parent="Main/FormConnectionClosed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -971,7 +972,7 @@ text = "Connection Closed
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Content" type="Label" parent="Connection/FormConnectionClosed"]
+[node name="Content" type="Label" parent="Main/FormConnectionClosed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -988,7 +989,7 @@ theme_override_font_sizes/font_size = 40
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="GoBack" type="Button" parent="Connection/FormConnectionClosed"]
+[node name="GoBack" type="Button" parent="Main/FormConnectionClosed"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -1010,6 +1011,10 @@ theme_override_colors/font_disabled_color = Color(1, 0.698039, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 0.698039, 0, 1)
 text = "GO BACK
 "
+
+[node name="Session" type="Control" parent="Main"]
+anchors_preset = 0
+script = ExtResource("10_fg13d")
 
 [node name="Themes" type="Control" parent="."]
 layout_mode = 1
@@ -1075,3 +1080,8 @@ theme = ExtResource("3_6ednw")
 text = "⭐"
 script = ExtResource("2_ysceq")
 metadata/color = "shark"
+
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

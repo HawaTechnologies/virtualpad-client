@@ -381,7 +381,7 @@ func _relese_all_touches():
 var _control_enabled = false
 
 # This is the connection component.
-var _connection = false
+var _session = false
 
 
 func _enable_control():
@@ -390,6 +390,7 @@ func _enable_control():
 	"""
 
 	_control_enabled = true
+	print("Enabling buttons")
 
 
 func _disable_control():
@@ -398,6 +399,7 @@ func _disable_control():
 	"""
 
 	_control_enabled = false
+	print("Disabling buttons")
 	_relese_all_touches()
 	_update_state()
 
@@ -418,9 +420,9 @@ func _input(event):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_collect_controls()
-	_connection = get_parent().get_node("Connection")
-	_connection.connect("connection_approved", self._enable_control)
-	_connection.connect("connection_closed", self._disable_control)
+	_session = get_parent().get_node("Main/Session")
+	_session.connect("session_approved", self._enable_control)
+	_session.connect("session_ended", self._disable_control)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
