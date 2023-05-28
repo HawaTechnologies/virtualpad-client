@@ -15,12 +15,20 @@ signal session_starting
 signal session_approved
 # - The session terminated (e.g. timeout).
 signal session_ended(reason_type, reason)
+# - The ping loop started.
+signal debug_ping_loop_started
 # - A ping was sent to the server.
 signal debug_ping_send_success
 # - A ping was not successfully sent to the server.
 signal debug_ping_send_error(error)
+# - The ping loop ended.
+signal debug_ping_loop_ended
+# - The pong loop started.
+signal debug_pong_loop_started
 # - A pong was received from the server.
 signal debug_pong_received
+# - The pong loop ended.
+signal debug_pong_loop_ended
 # - There was an error sending the data.
 signal debug_session_send_error(error)
 
@@ -134,6 +142,7 @@ func _ping_loop():
 	"""
 	
 	var _time = 0
+	emit_signal("debug_ping_loop_started")
 	await get_tree().process_frame
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		_time += get_process_delta_time()
@@ -141,6 +150,7 @@ func _ping_loop():
 			_time -= PING_SEND_INTERVAL
 			_ping_send()
 		await get_tree().process_frame
+	emit_signal("debug_ping_loop_ended")
 
 func _pong_loop():
 	"""
@@ -152,6 +162,7 @@ func _pong_loop():
 	"""
 	
 	var _time = 0
+	emit_signal("debug_pong_loop_started")
 	await get_tree().process_frame
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		_time += get_process_delta_time()
@@ -166,6 +177,7 @@ func _pong_loop():
 				StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
 			])
 		await get_tree().process_frame
+	emit_signal("debug_pong_loop_ended")
 
 
 ############
