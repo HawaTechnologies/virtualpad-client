@@ -26,7 +26,9 @@ signal debug_ping_loop_ended
 # - The pong loop started.
 signal debug_pong_loop_started
 # - A pong was received from the server.
-signal debug_pong_received
+signal debug_pong_receive_success
+# - There was an error receiving the pong.
+signal debug_pong_receive_error(error)
 # - The pong loop ended.
 signal debug_pong_loop_ended
 # - The data loop started.
@@ -35,12 +37,15 @@ signal debug_data_loop_started
 signal debug_data_loop_ended
 # - There was an error sending the data.
 signal debug_session_send_error(error)
+# - There was an error receiving the data.
+signal debug_session_receive_error(error)
 # - A poll just executed.
 signal after_poll
 
 # Reason types for closing/failure:
-const REASON_TYPE_LOCAL = 1000
-const REASON_TYPE_SERVER = 2000
+const REASON_TYPE_SERVER = 1000
+const REASON_TYPE_CLIENT = 2000
+const REASON_TYPE_LIBRARY = 3000  # This is a poll() error, actually.
 
 # Failure reasons:
 # - The authentication failed.
@@ -68,6 +73,8 @@ const CLOSE_REASON_SERVER_UNKNOWN = 1999
 const CLOSE_REASON_CLIENT_TERMINATED = 2001
 # - The client never received a PONG timeout from the server.
 const CLOSE_REASON_CLIENT_TIMEOUT = 2002
+# - Poll reason (serves as base).
+const CLOSE_REASON_LIBRARY_POLL_BASE = 3000
 
 # Messages the client sends to the server:
 const REQUEST_CLOSE_CONNECTION = 19
@@ -176,7 +183,7 @@ func _pong_loop():
 		if _pong_received:
 			_pong_received = false
 			_time = 0
-			emit_signal("debug_pong_received")
+			emit_signal("debug_pong_receive_success")
 		if _time >= PONG_RECEIVE_INTERVAL:
 			_stream.put_data([REQUEST_CLOSE_CONNECTION])
 			_stream.disconnect_from_host()
@@ -232,22 +239,25 @@ func _data_arrival_loop():
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		if _stream.get_available_bytes() > 0:
 			var response = _stream.get_data(_stream.get_available_bytes())
-			match response[1][0]:
-				0:
-					_session_status = SessionStatus.ACTIVE
-					emit_signal("session_approved")
-				SERVER_AUTH_FAILED:
-					_locally_fail(REASON_TYPE_SERVER, FAIL_REASON_SERVER_AUTH_FAILED)
-				SERVER_PAD_BUSY:
-					_locally_fail(REASON_TYPE_SERVER, FAIL_REASON_SERVER_PAD_BUSY)
-				SERVER_NOTIFICATION_PONG:
-					_pong_received = true
-				SERVER_NOTIFICATION_TIMEOUT:
-					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TIMEOUT)
-				SERVER_NOTIFICATION_TERMINATED:
-					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TERMINATED)
-				_:
-					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_UNKNOWN)
+			if response[0] != OK:
+				emit_signal("debug_session_receive_error", response[0])
+			else:
+				match response[1][0]:
+					0:
+						_session_status = SessionStatus.ACTIVE
+						emit_signal("session_approved")
+					SERVER_AUTH_FAILED:
+						_locally_fail(REASON_TYPE_SERVER, FAIL_REASON_SERVER_AUTH_FAILED)
+					SERVER_PAD_BUSY:
+						_locally_fail(REASON_TYPE_SERVER, FAIL_REASON_SERVER_PAD_BUSY)
+					SERVER_NOTIFICATION_PONG:
+						_pong_received = true
+					SERVER_NOTIFICATION_TIMEOUT:
+						_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TIMEOUT)
+					SERVER_NOTIFICATION_TERMINATED:
+						_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TERMINATED)
+					_:
+						_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_UNKNOWN)
 		await self.after_poll
 	emit_signal("debug_data_loop_ended")
 
@@ -284,7 +294,7 @@ func session_connect(
 
 	# First, disconnect the previous session, if any.
 	if _stream.get_status() != StreamPeerTCP.STATUS_NONE:
-		_locally_close(REASON_TYPE_LOCAL, CLOSE_REASON_CLIENT_TERMINATED)
+		_locally_close(REASON_TYPE_CLIENT, CLOSE_REASON_CLIENT_TERMINATED)
 		await _wait_socket_status([
 			StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
 		])
@@ -294,7 +304,7 @@ func session_connect(
 
 	# 1. Start by checking/adding the padd.
 	if pad_index < 0 or pad_index > 7:
-		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_INVALID_PAD)
+		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_INVALID_PAD)
 		return
 	message.append(pad_index)
 
@@ -304,20 +314,20 @@ func session_connect(
 	# 3. Add the password.
 	password = _filter_only_letters(password, 4)
 	if len(password) != 4:
-		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_INVALID_PASSWORD)
+		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_INVALID_PASSWORD)
 		return
 	message += password.to_utf8_buffer()
 
 	# 4. Add the nickname (pad it with spaces)
 	nickname = _filter_only_letters(nickname, 16)
 	if len(nickname) == 0:
-		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_INVALID_NICKNAME)
+		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_INVALID_NICKNAME)
 		return
 	message += (nickname + " ".repeat(16 - len(nickname))).to_utf8_buffer()
 		
 	var error = _stream.connect_to_host(host, 2357)
 	if error != OK:
-		emit_signal("session_failed", REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_UNKNOWN)
+		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_UNKNOWN)
 		return
 	else:
 		# Mark the session as starting, and wait until
@@ -329,7 +339,7 @@ func session_connect(
 		emit_signal("session_starting")
 		var result = _stream.put_data(message)
 		if result != OK:
-			_locally_close(REASON_TYPE_LOCAL, FAIL_REASON_CLIENT_UNKNOWN)
+			_locally_close(REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_UNKNOWN)
 			await _wait_socket_status([
 				StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
 			])
@@ -346,7 +356,7 @@ func session_disconnect():
 	This is a co-routine that must be waited for.
 	"""
 	
-	_locally_close(REASON_TYPE_LOCAL, CLOSE_REASON_CLIENT_TERMINATED)
+	_locally_close(REASON_TYPE_CLIENT, CLOSE_REASON_CLIENT_TERMINATED)
 	await _wait_socket_status([
 		StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
 	])
@@ -374,5 +384,16 @@ func session_send(data):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	_stream.poll()
+	var err = _stream.poll()
 	emit_signal("after_poll")
+	# Finally, we process the poll error, if any.
+	# On error, the socket is already disconnected
+	# from any host,
+	if err != OK:
+		_session_status = SessionStatus.NONE
+		# This one is idempotent, save for the status set.
+		_stream.disconnect_from_host()
+		emit_signal(
+			"session_ended", REASON_TYPE_LIBRARY,
+			CLOSE_REASON_LIBRARY_POLL_BASE + err
+		)

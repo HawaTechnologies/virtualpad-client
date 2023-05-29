@@ -90,9 +90,11 @@ func _ready():
 	$Session.connect("debug_ping_send_error", self._debug_ping_send_error)
 	$Session.connect("debug_ping_loop_ended", self._debug_ping_loop_ended)
 	$Session.connect("debug_pong_loop_started", self._debug_pong_loop_started)
-	$Session.connect("debug_pong_received", self._debug_pong_received)
+	$Session.connect("debug_pong_receive_success", self._debug_pong_receive_success)
+	$Session.connect("debug_pong_receive_error", self._debug_pong_receive_error)
 	$Session.connect("debug_pong_loop_ended", self._debug_pong_loop_ended)
 	$Session.connect("debug_session_send_error", self._debug_session_send_error)
+	$Session.connect("debug_session_receive_error", self._debug_session_receive_error)
 	_reload_settings()
 	_show_popup($FormConnect)
 
@@ -201,8 +203,12 @@ func _debug_pong_loop_started():
 	print("Pong loop started")
 
 
-func _debug_pong_received():
+func _debug_pong_receive_success():
 	print("Pong received")
+
+
+func _debug_pong_receive_error(err):
+	print("Pong error! Error code: ", err)
 
 
 func _debug_pong_loop_ended():
@@ -211,6 +217,10 @@ func _debug_pong_loop_ended():
 
 func _debug_session_send_error(err):
 	print("Send error! Error code: ", err)
+
+
+func _debug_session_receive_error(err):
+	print("Receive error! Error code: ", err)
 
 
 func _show_popup(popup):
