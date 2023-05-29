@@ -35,6 +35,8 @@ signal debug_data_loop_started
 signal debug_data_loop_ended
 # - There was an error sending the data.
 signal debug_session_send_error(error)
+# - A poll just executed.
+signal after_poll
 
 # Reason types for closing/failure:
 const REASON_TYPE_LOCAL = 1000
@@ -105,7 +107,7 @@ func _wait_socket_status(statuses : Array):
 		return
 	
 	while true:
-		await get_tree().process_frame
+		await self.after_poll
 		if _stream.get_status() in statuses:
 			break
 
@@ -134,7 +136,8 @@ func _ping_send():
 			break
 		else:
 			emit_signal("debug_ping_send_error", result)
-			await get_tree().process_frame
+			await self.after_poll
+
 
 func _ping_loop():
 	"""
@@ -147,13 +150,13 @@ func _ping_loop():
 	
 	var _time = 0
 	emit_signal("debug_ping_loop_started")
-	await get_tree().process_frame
+	await self.after_poll
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		_time += get_process_delta_time()
 		if _time >= PING_SEND_INTERVAL:
 			_time -= PING_SEND_INTERVAL
 			_ping_send()
-		await get_tree().process_frame
+		await self.after_poll
 	emit_signal("debug_ping_loop_ended")
 
 func _pong_loop():
@@ -167,7 +170,7 @@ func _pong_loop():
 	
 	var _time = 0
 	emit_signal("debug_pong_loop_started")
-	await get_tree().process_frame
+	await self.after_poll
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		_time += get_process_delta_time()
 		if _pong_received:
@@ -180,7 +183,7 @@ func _pong_loop():
 			await _wait_socket_status([
 				StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
 			])
-		await get_tree().process_frame
+		await self.after_poll
 	emit_signal("debug_pong_loop_ended")
 
 
@@ -225,8 +228,8 @@ func _data_arrival_loop():
 	"""
 
 	emit_signal("debug_data_loop_started")
+	await self.after_poll
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-		await get_tree().process_frame
 		if _stream.get_available_bytes() > 0:
 			var response = _stream.get_data(_stream.get_available_bytes())
 			match response[1][0]:
@@ -245,6 +248,7 @@ func _data_arrival_loop():
 					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TERMINATED)
 				_:
 					_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_UNKNOWN)
+		await self.after_poll
 	emit_signal("debug_data_loop_ended")
 
 
@@ -371,3 +375,4 @@ func session_send(data):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_stream.poll()
+	emit_signal("after_poll")
