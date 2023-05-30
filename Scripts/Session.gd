@@ -94,9 +94,6 @@ const SERVER_NOTIFICATION_TIMEOUT = 8
 enum SessionStatus { NONE, STARTING, ACTIVE }
 var _session_status : SessionStatus = SessionStatus.NONE
 
-# This is the mode the pad will use.
-var MODE_COMPATIBLE = 1
-
 
 ############
 # General session functions.
@@ -308,17 +305,14 @@ func session_connect(
 		return
 	message.append(pad_index)
 
-	# 2. Add the mode. It will be constant here.
-	message.append(MODE_COMPATIBLE)
-
-	# 3. Add the password.
+	# 2. Add the password.
 	password = _filter_only_letters(password, 4)
 	if len(password) != 4:
 		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_INVALID_PASSWORD)
 		return
 	message += password.to_utf8_buffer()
 
-	# 4. Add the nickname (pad it with spaces)
+	# 3. Add the nickname (pad it with spaces)
 	nickname = _filter_only_letters(nickname, 16)
 	if len(nickname) == 0:
 		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_INVALID_NICKNAME)
