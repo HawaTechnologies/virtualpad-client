@@ -60,7 +60,7 @@ func _save_settings():
 func _ready():
 	_overlay = get_parent().get_node("ButtonOverlay")
 	_overlay.connect("gamepad_input", $Session.session_send)
-	_script = $Session.get_script()
+	_script = load("res://Scripts/Session.gd")
 	_left_close = get_parent().get_node("Buttons/LeftDisconnect")
 	_right_close = get_parent().get_node("Buttons/RightDisconnect")
 
@@ -109,7 +109,7 @@ func _session_failed(reason_type, reason):
 	Handler for when the session failed.
 	"""
 	
-	if reason_type == _script.REASON_TYPE_LOCAL:
+	if reason_type == _script.REASON_TYPE_CLIENT:
 		match reason:
 			_script.FAIL_REASON_CLIENT_INVALID_PAD:
 				$FormConnectionFailed/Content.text = "Invalid pad"
@@ -162,7 +162,7 @@ func _session_ended(reason_type, reason):
 				$FormConnectionClosed/Content.text = "The server lost any contact\nto this pad"
 			_:
 				$FormConnectionClosed/Content.text = "The connection\nunexpectedly ended"
-	elif reason_type == _script.REASON_TYPE_LOCAL:
+	elif reason_type == _script.REASON_TYPE_CLIENT:
 		match reason:
 			_script.CLOSE_REASON_CLIENT_TERMINATED:
 				$FormConnectionClosed/Content.text = "Connection terminated successfully"
