@@ -4,6 +4,14 @@ extends Control
 # This is the underlying connection manager for the
 # session(s) to establish.
 var _stream : StreamPeerTCP = StreamPeerTCP.new()
+# Also, the last-sent host and login data will be
+# held here. Why? Because the same data will be used
+# to retry the connection if suddenly terminated by
+# a network unstability. For a related purpose, the
+# _poll_err is kept.
+var _host = ""
+var _login = []
+var _poll_err = OK
 
 # All these signals are intended for the flow of this
 # connection, like this:
@@ -85,6 +93,10 @@ const SERVER_PAD_BUSY = 4
 const SERVER_NOTIFICATION_TERMINATED = 5
 const SERVER_NOTIFICATION_PONG = 7
 const SERVER_NOTIFICATION_TIMEOUT = 8
+
+# Reconnection settings:
+const RECONNECTION_ATTEMPTS = 3
+const RECONNECTION_INTERVAL = 3
 
 # This is the session status. It will be "active" when
 # between session_approved and session_ended. It will
@@ -278,6 +290,68 @@ func _filter_only_letters(value, length):
 	return filtered_value.substr(0, length)
 
 
+func _session_try_connect(retrying : bool = false):
+	"""
+	Attempts a connection from the last stored values in the
+	_host and _login variables. Can tell whether this function
+	is re-connecting or is connecting for the first time.
+	"""
+	
+	var error = OK
+	if retrying:
+		# We wait-and-retry some times until we give up.
+		for index in range(RECONNECTION_ATTEMPTS):
+			await get_tree().create_timer(RECONNECTION_INTERVAL).timeout
+			error = _stream.connect_to_host(_host, 2357)
+			if error == OK:
+				break
+		
+		# Then we fail with the error.
+		if error != OK:
+			# Always close with the previous poll error.
+			_session_status = SessionStatus.NONE
+			emit_signal(
+				"session_ended", REASON_TYPE_LIBRARY,
+				CLOSE_REASON_LIBRARY_POLL_BASE + _poll_err
+			)
+	else:
+		# We try only once, and fail with session_failed.
+		error = _stream.connect_to_host(_host, 2357)
+		if error != OK:
+			emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_UNKNOWN)
+			return
+	
+	# Mark the session as starting, and wait until
+	# the socket is connected, if this is not a retry.
+	if not retrying:
+		_session_status = SessionStatus.STARTING
+	# Then wait until it is established.
+	await _wait_socket_status([StreamPeerTCP.STATUS_CONNECTED])
+	# Then, trigger the signal if it is not a retry.
+	if not retrying:
+		emit_signal("session_starting")
+	# Then, do the authentication.
+	var result = _stream.put_data(_login)
+	if result != OK:
+		if not retrying:
+			# On new connection, close normally.
+			_locally_close(REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_UNKNOWN)
+			await _wait_socket_status([
+				StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
+			])
+		else:
+			# On retrying, always close with the poll error.
+			emit_signal(
+				"session_ended", REASON_TYPE_LIBRARY,
+				CLOSE_REASON_LIBRARY_POLL_BASE + _poll_err
+			)
+	else:
+		_poll_err = false
+		_ping_loop()
+		_pong_loop()
+		_data_arrival_loop()
+
+
 func session_connect(
 	host : String, pad_index : int, password : String, nickname : String
 ):
@@ -318,29 +392,13 @@ func session_connect(
 		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_INVALID_NICKNAME)
 		return
 	message += (nickname + " ".repeat(16 - len(nickname))).to_utf8_buffer()
-		
-	var error = _stream.connect_to_host(host, 2357)
-	if error != OK:
-		emit_signal("session_failed", REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_UNKNOWN)
-		return
-	else:
-		# Mark the session as starting, and wait until
-		# the socket is connected.
-		_session_status = SessionStatus.STARTING
-		await _wait_socket_status([StreamPeerTCP.STATUS_CONNECTED])
-		# Then, mark the session as starting and attempt the
-		# login message.
-		emit_signal("session_starting")
-		var result = _stream.put_data(message)
-		if result != OK:
-			_locally_close(REASON_TYPE_CLIENT, FAIL_REASON_CLIENT_UNKNOWN)
-			await _wait_socket_status([
-				StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
-			])
-		else:
-			_ping_loop()
-			_pong_loop()
-			_data_arrival_loop()
+
+	# Keep these variables, for the next step.
+	_host = host
+	_login = message
+	
+	# Attempt the connection.
+	await _session_try_connect()
 
 
 func session_disconnect():
@@ -384,10 +442,6 @@ func _process(delta):
 	# On error, the socket is already disconnected
 	# from any host,
 	if err != OK:
-		_session_status = SessionStatus.NONE
+		_poll_err = OK
 		# This one is idempotent, save for the status set.
 		_stream.disconnect_from_host()
-		emit_signal(
-			"session_ended", REASON_TYPE_LIBRARY,
-			CLOSE_REASON_LIBRARY_POLL_BASE + err
-		)
