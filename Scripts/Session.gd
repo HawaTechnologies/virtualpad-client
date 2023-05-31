@@ -445,3 +445,5 @@ func _process(delta):
 		_poll_err = OK
 		# This one is idempotent, save for the status set.
 		_stream.disconnect_from_host()
+		# Start the session-reconnect feature.
+		_session_try_connect(true)
