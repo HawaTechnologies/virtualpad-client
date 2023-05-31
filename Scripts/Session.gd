@@ -440,10 +440,11 @@ func _process(delta):
 	emit_signal("after_poll")
 	# Finally, we process the poll error, if any.
 	# On error, the socket is already disconnected
-	# from any host,
+	# from any host, so we fulfill the disconnection
+	# and start the recovery process.
 	if err != OK:
 		_poll_err = OK
 		# This one is idempotent, save for the status set.
 		_stream.disconnect_from_host()
-		# Start the session-reconnect feature.
+		# Start the session
 		_session_try_connect(true)
