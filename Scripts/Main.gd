@@ -187,8 +187,8 @@ func _debug_ping_loop_started():
 	print("Ping loop started")
 
 
-func _debug_ping_send_success():
-	print("Ping sent")
+func _debug_ping_send_success(delta):
+	print("Ping sent (", delta, ")")
 
 
 func _debug_ping_send_error(err):
@@ -203,8 +203,8 @@ func _debug_pong_loop_started():
 	print("Pong loop started")
 
 
-func _debug_pong_receive_success():
-	print("Pong received")
+func _debug_pong_receive_success(delta):
+	print("Pong received (", delta, ")")
 
 
 func _debug_pong_receive_error(err):

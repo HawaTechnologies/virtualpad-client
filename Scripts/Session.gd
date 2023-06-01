@@ -26,7 +26,7 @@ signal session_ended(reason_type, reason)
 # - The ping loop started.
 signal debug_ping_loop_started
 # - A ping was sent to the server.
-signal debug_ping_send_success
+signal debug_ping_send_success(delta)
 # - A ping was not successfully sent to the server.
 signal debug_ping_send_error(error)
 # - The ping loop ended.
@@ -34,7 +34,7 @@ signal debug_ping_loop_ended
 # - The pong loop started.
 signal debug_pong_loop_started
 # - A pong was received from the server.
-signal debug_pong_receive_success
+signal debug_pong_receive_success(delta)
 # - There was an error receiving the pong.
 signal debug_pong_receive_error(error)
 # - The pong loop ended.
@@ -133,11 +133,11 @@ func _wait_socket_status(statuses : Array):
 ############
 
 
-const PING_SEND_INTERVAL : float = 3
-const PONG_RECEIVE_INTERVAL : float = 10
+const PING_SEND_INTERVAL : float = 1
+const PONG_RECEIVE_INTERVAL : float = 20
 var _pong_received : bool = false
 
-func _ping_send():
+func _ping_send(delta):
 	"""
 	Sends the ping. Attempts until done.
 	
@@ -145,10 +145,11 @@ func _ping_send():
 	"""
 	
 	var result : Error = OK
+	var stamp = Time.get_ticks_msec()
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		result = _stream.put_data([REQUEST_PING])
 		if result == OK:
-			emit_signal("debug_ping_send_success")
+			emit_signal("debug_ping_send_success", ((Time.get_ticks_msec() - stamp) + delta) / 1000.0)
 			break
 		else:
 			emit_signal("debug_ping_send_error", result)
@@ -167,11 +168,14 @@ func _ping_loop():
 	var _time = 0
 	emit_signal("debug_ping_loop_started")
 	await self.after_poll
+	var stamp = Time.get_ticks_msec()
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		_time += get_process_delta_time()
 		if _time >= PING_SEND_INTERVAL:
 			_time -= PING_SEND_INTERVAL
-			_ping_send()
+			var new_stamp = Time.get_ticks_msec()
+			_ping_send(new_stamp - stamp)
+			stamp = new_stamp
 		await self.after_poll
 	emit_signal("debug_ping_loop_ended")
 
@@ -187,12 +191,16 @@ func _pong_loop():
 	var _time = 0
 	emit_signal("debug_pong_loop_started")
 	await self.after_poll
+	var stamp = Time.get_ticks_msec()
 	while _stream.get_status() == StreamPeerTCP.STATUS_CONNECTED:
 		_time += get_process_delta_time()
 		if _pong_received:
+			var new_stamp = Time.get_ticks_msec()
+			var delta = new_stamp - stamp
+			stamp = new_stamp
 			_pong_received = false
 			_time = 0
-			emit_signal("debug_pong_receive_success")
+			emit_signal("debug_pong_receive_success", delta / 1000.0)
 		if _time >= PONG_RECEIVE_INTERVAL:
 			_stream.put_data([REQUEST_CLOSE_CONNECTION])
 			_stream.disconnect_from_host()
