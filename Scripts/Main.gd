@@ -60,6 +60,7 @@ func _save_settings():
 func _ready():
 	_overlay = get_parent().get_node("ButtonOverlay")
 	_overlay.connect("gamepad_input", $Session.session_send)
+	_overlay.connect("gamepad_dhat_mode", $Session.session_set_dhat_mode)
 	_script = load("res://Scripts/Session.gd")
 	_left_close = get_parent().get_node("Buttons/LeftDisconnect")
 	_right_close = get_parent().get_node("Buttons/RightDisconnect")
@@ -83,6 +84,7 @@ func _ready():
 	$Session.connect("session_starting", self._session_starting)
 	$Session.connect("session_approved", self._session_approved)
 	$Session.connect("session_ended", self._session_ended)
+	$Session.connect("dhat_mode_set", self._dhat_mode_set)
 	$Session.connect("debug_data_loop_started", self._debug_data_loop_started)
 	$Session.connect("debug_data_loop_ended", self._debug_data_loop_ended)
 	$Session.connect("debug_ping_loop_started", self._debug_ping_loop_started)
@@ -173,6 +175,15 @@ func _session_ended(reason_type, reason):
 	else:
 		$FormConnectionClosed/Content.text = "Unknown error"
 	_show_popup($FormConnectionClosed)
+
+
+func _dhat_mode_set(mode):
+	"""
+	Handler for when the dhat mode was set.
+	"""
+	
+	$"../Buttons/Main/DHatMode".text = "DPad mode: Buttons" if mode == 0 else "DPad mode: Axes"
+	$"../ButtonOverlay".dhat_mode = mode
 
 
 func _debug_data_loop_started():

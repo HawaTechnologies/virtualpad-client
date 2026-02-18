@@ -3,7 +3,6 @@ extends Control
 
 # Buttons are: North, East, South, West, L1, R1, L2, R2,
 #              Select, Start, Up, Down, Left, Right.
-const N_BUTTONS = 14
 const BTN_NORTH = 0
 const BTN_EAST = 1
 const BTN_SOUTH = 2
@@ -18,7 +17,13 @@ const BTN_UP = 10
 const BTN_DOWN = 11
 const BTN_LEFT = 12
 const BTN_RIGHT = 13
+# Special buttons are: DHatMode.
+const BTN_SPECIAL_BASE = 10000
+const BTN_SPECIAL_DHAT_MODE = BTN_SPECIAL_BASE
+
+
 var _buttons_by_name = {
+	# Buttons.
 	"north": BTN_NORTH,
 	"east": BTN_EAST,
 	"south": BTN_SOUTH,
@@ -33,6 +38,8 @@ var _buttons_by_name = {
 	"down": BTN_DOWN,
 	"left": BTN_LEFT,
 	"right": BTN_RIGHT,
+	# Special buttons.
+	"dhat-mode": BTN_SPECIAL_DHAT_MODE
 }
 
 
@@ -42,6 +49,8 @@ const ABS_X = 14
 const ABS_Y = 15
 const ABS_RX = 16
 const ABS_RY = 17
+
+
 var _axes_by_name = {
 	"analog_left": [ABS_X, ABS_Y],
 	"analog_right": [ABS_RX, ABS_RY]
@@ -50,6 +59,11 @@ var _axes_by_name = {
 
 # Callback to process the gamepad events.
 signal gamepad_input(keys)
+
+
+# Callback to process the gamepad mode.
+# The mode is 0=buttons, 1=left-axis.
+signal gamepad_dhat_mode(mode)
 
 
 # The buttons will be contained here. In this case, we'll keep
@@ -80,6 +94,10 @@ var _BUTTONS = []
 #
 # This is only populated on startup.
 var _ANALOGS = []
+
+
+# The current mode is 0=axes, 1=axes.
+var dhat_mode = 0
 
 
 func _collect_controls():
@@ -205,12 +223,27 @@ var _new_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 					127, 127, 127, 127]
 
 
+# This is the current special state, for special buttons. This old state
+# is always compared to a new state to tell which ones are the differences
+# to be updated.
+var _current_special_state = [0]
+
+
+# This is the new special state, for special buttons. Pressing and releasing
+# buttons makes changes into this array. Later, this array is compared and
+# then the changes are sent through the connection.
+var _new_special_state = [0]
+
+
 func _modify_state(index, value):
 	"""
 	Modifies the new state with a value.
 	"""
 	
-	_new_state[index] = value
+	if index >= BTN_SPECIAL_BASE:
+		_new_special_state[index - BTN_SPECIAL_BASE] = value
+	else:
+		_new_state[index] = value
 
 
 func _calculate_state_diff():
@@ -228,7 +261,22 @@ func _calculate_state_diff():
 	return differences
 
 
-func _update_state():
+func _calculate_special_state_diff():
+	"""
+	Computes the special state differences. Returns the pairs of
+	index and value that they differ on.
+	"""
+	
+	var differences = []
+	var index = 0
+	for value in _new_special_state:
+		if value != _current_special_state[index]:
+			differences.append([index, value])
+		index += 1
+	return differences
+
+
+func _update_states():
 	"""
 	Updates the current state from the new state.
 	"""
@@ -236,6 +284,10 @@ func _update_state():
 	var index = 0
 	for value in _new_state:
 		_current_state[index] = value
+		index += 1
+	index = 0
+	for value in _new_special_state:
+		_current_special_state[index] = value
 		index += 1
 
 
@@ -277,6 +329,12 @@ func _set_control(index, keys, control, is_analog, position, add_touch=true):
 	Sets a touch index (and its control). Also sets the
 	corresponding states.
 	"""
+	
+	var is_special = false
+	var is_change_dhat_mode = false
+	for key in keys:
+		if key >= BTN_SPECIAL_BASE:
+			is_special = true
 
 	if not is_analog:
 		control.button_pressed = true
@@ -285,6 +343,7 @@ func _set_control(index, keys, control, is_analog, position, add_touch=true):
 			_TOUCHED_CONTROLS[control] = 1
 		else:
 			_TOUCHED_CONTROLS[control] += 1
+
 	if is_analog:
 		# Clear an analog to 127 in both keys.
 		var r = _get_analog_pos(control, position)
@@ -401,7 +460,7 @@ func _disable_control(rt, r):
 	_control_enabled = false
 	print("Disabling buttons")
 	_relese_all_touches()
-	_update_state()
+	_update_states()
 
 
 func _input(event):
@@ -436,4 +495,12 @@ func _process(delta):
 	var diff = _calculate_state_diff()
 	if len(diff):
 		emit_signal("gamepad_input", diff)
-	_update_state()
+	var special_diff = _calculate_special_state_diff()
+	if len(special_diff):
+		for pair in special_diff:
+			if pair[1] == 0:
+				break
+
+			if pair[0] + BTN_SPECIAL_BASE == BTN_SPECIAL_DHAT_MODE:
+				emit_signal("gamepad_dhat_mode", 1 - dhat_mode)
+	_update_states()

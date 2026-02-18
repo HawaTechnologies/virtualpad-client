@@ -49,6 +49,8 @@ signal debug_session_send_error(error)
 signal debug_session_receive_error(error)
 # - A poll just executed.
 signal after_poll
+# - The mode has changed.
+signal dhat_mode_set(mode)
 
 # Reason types for closing/failure:
 const REASON_TYPE_SERVER = 1000
@@ -87,12 +89,16 @@ const CLOSE_REASON_LIBRARY_POLL_BASE = 3000
 # Messages the client sends to the server:
 const REQUEST_CLOSE_CONNECTION = 19
 const REQUEST_PING = 20
+const REQUEST_USE_DHAT_MODE_BUTTONS = 21
+const REQUEST_USE_DHAT_MODE_LEFT_AXIS = 22
 # Messages the server sends to the client:
 const SERVER_AUTH_FAILED = 1
 const SERVER_PAD_BUSY = 4
 const SERVER_NOTIFICATION_TERMINATED = 5
 const SERVER_NOTIFICATION_PONG = 7
 const SERVER_NOTIFICATION_TIMEOUT = 8
+const SERVER_NOTIFICATION_DHAT_MODE_BUTTONS_SET = 9
+const SERVER_NOTIFICATION_DHAT_MODE_AXES_SET = 10
 
 # Reconnection settings:
 const RECONNECTION_ATTEMPTS = 3
@@ -269,6 +275,10 @@ func _data_arrival_loop():
 						_locally_fail(REASON_TYPE_SERVER, FAIL_REASON_SERVER_PAD_BUSY)
 					SERVER_NOTIFICATION_PONG:
 						_pong_received = true
+					SERVER_NOTIFICATION_DHAT_MODE_BUTTONS_SET:
+						emit_signal("dhat_mode_set", 0)
+					SERVER_NOTIFICATION_DHAT_MODE_AXES_SET:
+						emit_signal("dhat_mode_set", 1)
 					SERVER_NOTIFICATION_TIMEOUT:
 						_locally_close(REASON_TYPE_SERVER, CLOSE_REASON_SERVER_TIMEOUT)
 					SERVER_NOTIFICATION_TERMINATED:
@@ -338,6 +348,7 @@ func _session_try_connect(retrying : bool = false):
 	# Then, trigger the signal if it is not a retry.
 	if not retrying:
 		emit_signal("session_starting")
+		emit_signal("dhat_mode_set", 0)
 	# Then, do the authentication.
 	var result = _stream.put_data(_login)
 	if result != OK:
@@ -420,6 +431,25 @@ func session_disconnect():
 	await _wait_socket_status([
 		StreamPeerTCP.STATUS_NONE, StreamPeerTCP.STATUS_ERROR
 	])
+
+
+func session_set_dhat_mode(dhat_mode):
+	"""
+	Attempts to set the dhat mode.
+	"""
+	
+	if _session_status != SessionStatus.ACTIVE:
+		return false
+
+	var message = PackedByteArray([
+		REQUEST_USE_DHAT_MODE_BUTTONS
+		if dhat_mode == 0 else
+		REQUEST_USE_DHAT_MODE_LEFT_AXIS
+	])
+	var result = _stream.put_data(message)
+	if result != OK:
+		emit_signal("debug_session_send_error", result)
+	return true
 
 
 func session_send(data):

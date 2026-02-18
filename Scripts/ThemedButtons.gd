@@ -15,4 +15,3 @@ func set_button_colors_and_update(theme):
 
 func _ready():
 	set_button_colors_and_update(get_meta("default_color"))
-
