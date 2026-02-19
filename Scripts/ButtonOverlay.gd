@@ -1,12 +1,12 @@
 extends Control
 
 
-# Buttons are: North, East, South, West, L1, R1, L2, R2,
+# Buttons are: South, East, West, North, L1, R1, L2, R2,
 #              Select, Start, Up, Down, Left, Right.
-const BTN_NORTH = 0
+const BTN_NORTH = 3
 const BTN_EAST = 1
-const BTN_SOUTH = 2
-const BTN_WEST = 3
+const BTN_SOUTH = 0
+const BTN_WEST = 2
 const BTN_L1 = 4
 const BTN_R1 = 5
 const BTN_L2 = 6
